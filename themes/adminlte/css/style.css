@@ -1,0 +1,104 @@
+/**
+ * Table of Contents
+ *
+ * 1.0 - AdminLTE
+ * 2.0 - Elements
+ * 3.0 - Diary module
+ * 4.0 - Blog module
+ * 5.0 - Todo
+ * 6.0 - Box
+ */
+
+
+/**
+ * 1.0 - AdminLTE
+ */
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+body {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+body > .header .logo {
+  font-family: inherit;
+}
+body > .header .navbar .nav > li > a > .badge {
+  position: absolute;
+  top: 4px;
+  right: 0;
+  font-size: 75%;
+}
+body .navbar-nav > .notifications-menu > .dropdown-menu > li .menu > li > a > .glyphicon,
+body .navbar-nav > .notifications-menu > .dropdown-menu > li .menu > li > a > .fa,
+body .navbar-nav > .notifications-menu > .dropdown-menu > li .menu > li > a > .ion {
+  background: none;
+  color: inherit;
+}
+body .user-panel > .info {
+  padding-left: 10px;
+}
+
+
+/**
+ * 2.0 - Elements
+ */
+.content-wrapper.loading:before {
+  content: "\f110"; display: inline-block; 
+  font-family: FontAwesome; font-feature-settings: normal; font-kerning: auto; 
+  font-language-override: normal; font-size: 3em; font-size-adjust: none; 
+  font-stretch: normal; font-style: normal; font-synthesis: weight style; 
+  font-variant: normal; font-weight: normal; line-height: 1; text-align: center; 
+  padding: 15px 0; -webkit-animation: fa-spin 1s infinite steps(8); 
+  animation: fa-spin 1s infinite steps(8);
+  
+  left: 48%;
+  position: fixed;
+  top: 48%;
+  z-index: 1;
+}
+
+.modal-body.loading { min-height: 80px; position: relative; }
+.modal-body.loading:before {
+  content: "\f110"; display: inline-block; 
+  font-family: FontAwesome; font-feature-settings: normal; font-kerning: auto; 
+  font-language-override: normal; font-size: 3em; font-size-adjust: none; 
+  font-stretch: normal; font-style: normal; font-synthesis: weight style; 
+  font-variant: normal; font-weight: normal; line-height: 1; text-align: center; 
+  padding: 15px 0; -webkit-animation: fa-spin 1s infinite steps(8); 
+  animation: fa-spin 1s infinite steps(8);
+  
+  left: 48%;
+  position: absolute;
+  top: 0;
+  z-index: 1;
+}
+
+a.asc:after, a.desc:after {
+	font-family: "FontAwesome";
+	margin-left: 6px;
+}
+
+a.desc:after {
+	content: "\f107";
+}
+
+a.asc:after {
+	content: "\f106";
+}
+
+.grid-view .summary { margin-bottom: 10px }
+
+.select2-dropdown .select2-search__field:focus, .select2-search--inline .select2-search__field:focus {
+  border: medium none;
+}
+
+
+/* 
+ * 6.0 Box
+ */
+
+.box-tools .dropdown-toggle {
+	cursor: pointer;
+}

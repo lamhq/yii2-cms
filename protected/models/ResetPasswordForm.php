@@ -1,8 +1,8 @@
 <?php
-namespace frontend\modules\user\models;
+namespace app\models;
 
-use common\models\User;
-use common\models\UserToken;
+use app\models\User;
+use app\models\UserToken;
 use yii\base\InvalidParamException;
 use yii\base\Model;
 use Yii;
@@ -18,7 +18,7 @@ class ResetPasswordForm extends Model
     public $password;
 
     /**
-     * @var \common\models\UserToken
+     * @var \app\models\UserToken
      */
     private $token;
 
@@ -80,7 +80,7 @@ class ResetPasswordForm extends Model
     public function attributeLabels()
     {
         return [
-            'password'=>Yii::t('frontend', 'Password')
+            'password'=>Yii::t('app', 'Password')
         ];
     }
 }

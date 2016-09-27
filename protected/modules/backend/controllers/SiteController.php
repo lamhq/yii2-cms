@@ -6,7 +6,8 @@ use Yii;
 use yii\web\Controller;
 use backend\models\LoginForm;
 use backend\models\AccountForm;
-use app\models\PasswordResetRequestForm;
+use app\models\ForgotPasswordForm;
+use app\models\ResetPasswordForm;
 use yii\filters\VerbFilter;
 
 class SiteController extends Controller {
@@ -85,11 +86,11 @@ class SiteController extends Controller {
      */
     public function actionForgotPassword()
     {
-        $model = new PasswordResetRequestForm();
+        $model = new ForgotPasswordForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
         	$model->sendEmail();
             Yii::$app->getSession()->setFlash('alert', [
-                'body'=>Yii::t('app', 'Check your email for further instructions.'),
+                'body'=>Yii::t('app', 'An email will be sent to your inbox if your account existed in system.'),
                 'options'=>['class'=>'alert-success']
             ]);
             return $this->refresh();
@@ -100,4 +101,32 @@ class SiteController extends Controller {
             'model' => $model,
         ]);
     }
+
+    /**
+     * @param $token
+     * @return string|Response
+     * @throws BadRequestHttpException
+     */
+    public function actionResetPassword($token)
+    {
+        try {
+            $model = new ResetPasswordForm($token);
+        } catch (InvalidParamException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
+            Yii::$app->getSession()->setFlash('alert', [
+                'body'=> Yii::t('app', 'New password was saved. You can login with the new password.'),
+                'options'=>['class'=>'alert-success']
+            ]);
+            return $this->redirect(['/backend/site/login']);
+        }
+
+		$this->layout = 'blank';
+        return $this->render('reset-password', [
+            'model' => $model,
+        ]);
+    }
+
 }

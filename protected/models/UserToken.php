@@ -7,6 +7,7 @@ use Yii;
 use yii\base\InvalidCallException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "{{%user_token}}".
@@ -23,121 +24,120 @@ use yii\db\ActiveRecord;
  */
 class UserToken extends ActiveRecord
 {
-    const TOKEN_LENGTH = 40;
-    const TYPE_ACTIVATION = 1;
-    const TYPE_PASSWORD_RESET = 2;
+	const TOKEN_LENGTH = 40;
+	const TYPE_ACTIVATION = 1;
+	const TYPE_PASSWORD_RESET = 2;
 
-    /**
-     * @return string
-     */
-    function __toString()
-    {
-        return $this->token;
-    }
+	/**
+	 * @return string
+	 */
+	function __toString()
+	{
+		return $this->token;
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public static function tableName()
-    {
-        return '{{%user_token}}';
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public static function tableName()
+	{
+		return '{{%user_token}}';
+	}
 
-    /**
-     * @return array
-     */
-    public function behaviors()
-    {
-        return [
-            TimestampBehavior::className()
-        ];
-    }
+	/**
+	 * @return array
+	 */
+	public function behaviors()
+	{
+		return [
+			[
+				'class' => TimestampBehavior::className(),
+				'value' => new Expression('NOW()'),
+			]
+		];
+	}
 
-    /**
-     * @return UserTokenQuery
-     */
-    public static function find()
-    {
-        return new UserTokenQuery(get_called_class());
-    }
+	/**
+	 * @return UserTokenQuery
+	 */
+	public static function find()
+	{
+		return new UserTokenQuery(get_called_class());
+	}
 
 
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-            [['user_id', 'type', 'token'], 'required'],
-            [['user_id', 'expire_at'], 'integer'],
-            [['type'], 'string', 'max' => 255],
-            [['token'], 'string', 'max' => self::TOKEN_LENGTH]
-        ];
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function rules()
+	{
+		return [
+			[['user_id', 'type', 'token'], 'required'],
+			[['user_id'], 'integer'],
+			[['type'], 'integer'],
+			[['expire_at'], 'safe'],
+			[['token'], 'string', 'max' => self::TOKEN_LENGTH]
+		];
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => Yii::t('app', 'ID'),
-            'user_id' => Yii::t('app', 'User ID'),
-            'type' => Yii::t('app', 'Type'),
-            'token' => Yii::t('app', 'Token'),
-            'expire_at' => Yii::t('app', 'Expire At'),
-            'created_at' => Yii::t('app', 'Created At'),
-            'updated_at' => Yii::t('app', 'Updated At'),
-        ];
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function attributeLabels()
+	{
+		return [
+			'id' => Yii::t('app', 'ID'),
+			'user_id' => Yii::t('app', 'User ID'),
+			'type' => Yii::t('app', 'Type'),
+			'token' => Yii::t('app', 'Token'),
+			'expire_at' => Yii::t('app', 'Expire At'),
+			'created_at' => Yii::t('app', 'Created At'),
+			'updated_at' => Yii::t('app', 'Updated At'),
+		];
+	}
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUser()
-    {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
-    }
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getUser()
+	{
+		return $this->hasOne(User::className(), ['id' => 'user_id']);
+	}
 
-    /**
-     * @param mixed $user_id
-     * @param string $type
-     * @param int|null $duration
-     * @return bool|UserToken
-     */
-    public static function create($user_id, $type, $duration = null)
-    {
-        $model = new self;
-        $model->setAttributes([
-            'user_id' => $user_id,
-            'type' => $type,
-            'token' => Yii::$app->security->generateRandomString(self::TOKEN_LENGTH),
-            'expire_at' => $duration ? time() + $duration : null
-        ]);
+	/**
+	 * @param mixed $user_id
+	 * @param string $type
+	 * @param int|null $duration
+	 * @return bool|UserToken
+	 */
+	public static function create($user_id, $type, $duration = null)
+	{
+		$model = new self;
+		$model->setAttributes([
+			'user_id' => $user_id,
+			'type' => $type,
+			'token' => Yii::$app->security->generateRandomString(self::TOKEN_LENGTH),
+			'expire_at' => $duration ? 
+				new Expression(sprintf('DATE_ADD(NOW(), INTERVAL %d SECOND)', $duration))
+				: null,
+		]);
 
-        if (!$model->save()) {
-            throw new InvalidCallException;
-        };
+		if (!$model->save()) {
+			var_dump($model->getErrors());die;
+			throw new InvalidCallException;
+		};
 
-        return $model;
+		return $model;
+	}
 
-    }
-
-    /**
-     * @param int|null $duration
-     */
-    public function renew($duration)
-    {
-        $this->updateAttributes([
-            'expire_at' => $duration ? time() + $duration : null
-        ]);
-    }
-    
-    /**
-     * @return UsertokenQuery
-     */
-    public static function find()
-    {
-        return new UserTokenQuery(get_called_class());
-    }
+	/**
+	 * @param int|null $duration
+	 */
+	public function renew($duration)
+	{
+		$this->updateAttributes([
+			'expire_at' => $duration ? time() + $duration : null
+		]);
+	}
+	
 }

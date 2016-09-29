@@ -4,9 +4,60 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c4d4955ff35947e6b2214dc7dd7b01d3",
-    "content-hash": "ebc8a01a892b1decd0067b89c890f4d9",
+    "hash": "75984ae04c7acf1f712d1e1989ba32f5",
+    "content-hash": "fad5beea0be88d605b29475a7f9cd742",
     "packages": [
+        {
+            "name": "asofter/yii2-imperavi-redactor",
+            "version": "0.0.3",
+            "target-dir": "yii/imperavi",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/asofter/yii2-imperavi-redactor.git",
+                "reference": "08e05dd323f7b8f247a68324a5767eb14ffb7a1f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/asofter/yii2-imperavi-redactor/zipball/08e05dd323f7b8f247a68324a5767eb14ffb7a1f",
+                "reference": "08e05dd323f7b8f247a68324a5767eb14ffb7a1f",
+                "shasum": ""
+            },
+            "require": {
+                "yiisoft/yii2": "*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-0": {
+                    "yii\\imperavi\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Alexander Yaremchuk",
+                    "email": "alwex10@gmail.com"
+                },
+                {
+                    "name": "Veaceslav Medvedev",
+                    "email": "slavcopost@gmail.com"
+                },
+                {
+                    "name": "Alexander Makarov",
+                    "email": "sam@rmcreative.ru",
+                    "homepage": "http://rmcreative.ru/"
+                }
+            ],
+            "description": "Imperavi Redactor WYSIWYG widget (OEM-licensed for Yii 2)",
+            "keywords": [
+                "imperavi",
+                "imperavi redactor",
+                "yii"
+            ],
+            "time": "2016-01-12 16:21:51"
+        },
         {
             "name": "bower-asset/admin-lte",
             "version": "v2.3.6",

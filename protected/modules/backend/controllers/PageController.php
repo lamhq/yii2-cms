@@ -3,14 +3,15 @@
 namespace backend\controllers;
 
 use Yii;
-use app\models\Post;
+use app\models\Page;
+use app\components\Helper;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * PostController implements the CRUD actions for Post model.
+ * PageController implements the CRUD actions for Page model.
  */
 class PageController extends Controller
 {
@@ -27,13 +28,13 @@ class PageController extends Controller
     }
 
     /**
-     * Lists all Post models.
+     * Lists all Page models.
      * @return mixed
      */
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Post::find()->where(['type'=>Post::TYPE_PAGE]),
+            'query' => Page::find()->where(['status'=>Page::STATUS_ACTIVE]),
 			'sort'=>['defaultOrder' => ['updated_at'=>SORT_DESC]]
         ]);
 
@@ -43,36 +44,17 @@ class PageController extends Controller
     }
 
     /**
-     * Displays a single Post model.
-     * @param string $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
-     * Creates a new Post model.
+     * Creates a new Page model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Post([
-			'scenario' => 'create',
-			'author_id' => Yii::$app->user->id,
-			'type' => Post::TYPE_POST
-		]);
+        $model = new Page();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-			$model->saveFeaturedImage();
-			$model->saveUploadImages();
-			$model->saveSelectedCategories();
-			$model->saveTags();
-            return $this->redirect(['view', 'id' => $model->id]);
+            Helper::setSuccess(Yii::t('app', 'Data saved.'));
+            return $this->redirect(['update', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -81,7 +63,7 @@ class PageController extends Controller
     }
 
     /**
-     * Updates an existing Post model.
+     * Updates an existing Page model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param string $id
      * @return mixed
@@ -89,13 +71,9 @@ class PageController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-		$model->scenario = 'update';
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-			$model->saveFeaturedImage();
-			$model->saveUploadImages();
-			$model->saveSelectedCategories();
-			$model->saveTags();
+            Helper::setSuccess(Yii::t('app', 'Data saved.'));
             return $this->redirect(['update', 'id' => $model->id]);
         } else {
             return $this->render('update', [
@@ -105,7 +83,7 @@ class PageController extends Controller
     }
 
     /**
-     * Deletes an existing Post model.
+     * Deletes an existing Page model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param string $id
      * @return mixed
@@ -118,15 +96,15 @@ class PageController extends Controller
     }
 
     /**
-     * Finds the Post model based on its primary key value.
+     * Finds the Page model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param string $id
-     * @return Post the loaded model
+     * @return Page the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Post::findOne($id)) !== null) {
+        if (($model = Page::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

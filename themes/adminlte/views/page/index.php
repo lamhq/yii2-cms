@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use app\components\Helper;
+use app\components\EnumColumn;
+use app\models\Page;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -22,8 +24,17 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'title',
+            'created_at:datetime',
+            [
+                'class' => EnumColumn::className(),
+                'attribute' => 'status',
+                'enum' => Page::getStatuses()
+            ],
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template'=>'{update} {delete}'
+            ],
         ],
     ]); ?>
 

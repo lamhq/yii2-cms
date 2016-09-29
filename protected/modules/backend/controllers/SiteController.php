@@ -8,24 +8,25 @@ use backend\models\LoginForm;
 use backend\models\AccountForm;
 use app\models\ForgotPasswordForm;
 use app\models\ResetPasswordForm;
+use app\components\Helper;
 use yii\filters\VerbFilter;
 
 class SiteController extends Controller {
 
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
-        ];
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function behaviors()
+	{
+		return [
+			'verbs' => [
+				'class' => VerbFilter::className(),
+				'actions' => [
+					'logout' => ['post'],
+				],
+			],
+		];
+	}
 
 	public function actions() {
 		return [
@@ -81,52 +82,46 @@ class SiteController extends Controller {
 		return $this->render('account', ['model' => $model]);
 	}
 
-    /**
-     * @return string|Response
-     */
-    public function actionForgotPassword()
-    {
-        $model = new ForgotPasswordForm();
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-        	$model->sendEmail();
-            Yii::$app->getSession()->setFlash('alert', [
-                'body'=>Yii::t('app', 'An email will be sent to your inbox if your account existed in system.'),
-                'options'=>['class'=>'alert-success']
-            ]);
-            return $this->refresh();
-        }
+	/**
+	 * @return string|Response
+	 */
+	public function actionForgotPassword()
+	{
+		$model = new ForgotPasswordForm();
+		if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+			$model->sendEmail();
+        	Helper::setSuccess(Yii::t('app', 'An email will be sent to your inbox if your account existed in system.'));
+			return $this->refresh();
+		}
 
 		$this->layout = 'blank';
-        return $this->render('forgot-password', [
-            'model' => $model,
-        ]);
-    }
+		return $this->render('forgot-password', [
+			'model' => $model,
+		]);
+	}
 
-    /**
-     * @param $token
-     * @return string|Response
-     * @throws BadRequestHttpException
-     */
-    public function actionResetPassword($token)
-    {
-        try {
-            $model = new ResetPasswordForm($token);
-        } catch (InvalidParamException $e) {
-            throw new BadRequestHttpException($e->getMessage());
-        }
+	/**
+	 * @param $token
+	 * @return string|Response
+	 * @throws BadRequestHttpException
+	 */
+	public function actionResetPassword($token)
+	{
+		try {
+			$model = new ResetPasswordForm($token);
+		} catch (InvalidParamException $e) {
+			throw new BadRequestHttpException($e->getMessage());
+		}
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
-            Yii::$app->getSession()->setFlash('alert', [
-                'body'=> Yii::t('app', 'New password was saved. You can login with the new password.'),
-                'options'=>['class'=>'alert-success']
-            ]);
-            return $this->redirect(['/backend/site/login']);
-        }
+		if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
+			Helper::setSuccess(Yii::t('app', 'New password was saved. You can login with the new password.'));
+			return $this->redirect(['/backend/site/login']);
+		}
 
 		$this->layout = 'blank';
-        return $this->render('reset-password', [
-            'model' => $model,
-        ]);
-    }
+		return $this->render('reset-password', [
+			'model' => $model,
+		]);
+	}
 
 }

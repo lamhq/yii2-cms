@@ -18,7 +18,8 @@
 		"yiisoft/yii2": ">=2.0.5",
 		"yiisoft/yii2-bootstrap": "*",
 		"yiisoft/yii2-swiftmailer": "*",
-		"lamhq/yii2-adminlte-asset": "*"
+		"lamhq/yii2-adminlte-asset": "*",
+		"asofter/yii2-imperavi-redactor": "^0.0.3"
 	},
 	"require-dev": {
 		"yiisoft/yii2-codeception": "*",
@@ -39,12 +40,12 @@
 			"setPermission": [
 				{
 					"runtime": "0777",
-					"web/assets": "0777",
+					"assets": "0777",
 					"yii": "0755"
 				}
 			],
 			"generateCookieValidationKey": [
-				"config/web.php"
+				"config/_common.php"
 			]
 		},
 		"asset-installer-paths": {

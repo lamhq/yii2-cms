@@ -30,7 +30,9 @@ class EmailTemplate extends \yii\db\ActiveRecord
         return [
             [['body'], 'string'],
             [['name'], 'string', 'max' => 30],
+            [['name'], 'unique'],
             [['subject'], 'string', 'max' => 255],
+            [['subject','body'], 'required'],
         ];
     }
 

@@ -11,10 +11,13 @@ use backend\widgets\AdminLteMenu;
 		<!-- sidebar menu: : style can be found in sidebar.less -->
 		<?= AdminLteMenu::widget([
 			'items'=>[
-				['label'=>Yii::t('app', 'Banner'), 'url'=>['/backend/banner'], 'icon'=>'fa fa-circle-o'],
-				['label'=>Yii::t('app', 'Post'), 'url'=>['/backend/post'], 'icon'=>'fa fa-circle-o'],
-				['label'=>Yii::t('app', 'Page'), 'url'=>['/backend/page'], 'icon'=>'fa fa-circle-o'],
-				['label'=>Yii::t('app', 'Category'), 'url'=>['/backend/category'], 'icon'=>'fa fa-circle-o'],
+				['label'=>Yii::t('app', 'Content'), 'icon'=>'fa fa-edit', 'items'=>[
+					['label'=>Yii::t('app', 'Static Page'), 'url'=>['/backend/page/index'] ],
+					['label'=>Yii::t('app', 'Email Template'), 'url'=>['/backend/email-template/index'] ],
+					['label'=>Yii::t('app', 'Banner'), 'url'=>['/backend/banner/index'] ],
+					['label'=>Yii::t('app', 'Post'), 'url'=>['/backend/post/index'] ],
+					['label'=>Yii::t('app', 'Category'), 'url'=>['/backend/category/index'] ],
+				]],
 			]
 		]) ?>
 	</section>

@@ -3,16 +3,16 @@
 namespace backend\controllers;
 
 use Yii;
-use portfolio\models\Project;
+use app\models\EmailTemplate;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * ProjectController implements the CRUD actions for Project model.
+ * EmailTemplateController implements the CRUD actions for EmailTemplate model.
  */
-class ProjectController extends Controller
+class EmailTemplateController extends Controller
 {
     /**
      * @inheritdoc
@@ -30,14 +30,13 @@ class ProjectController extends Controller
     }
 
     /**
-     * Lists all Project models.
+     * Lists all EmailTemplate models.
      * @return mixed
      */
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Project::find(),
-            'sort'=>['defaultOrder' => ['updated_at'=>SORT_DESC]],
+            'query' => EmailTemplate::find(),
         ]);
 
         return $this->render('index', [
@@ -46,7 +45,7 @@ class ProjectController extends Controller
     }
 
     /**
-     * Displays a single Project model.
+     * Displays a single EmailTemplate model.
      * @param string $id
      * @return mixed
      */
@@ -58,18 +57,15 @@ class ProjectController extends Controller
     }
 
     /**
-     * Creates a new Project model.
+     * Creates a new EmailTemplate model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Project();
-        $model->status = Project::STATUS_ACTIVE;
+        $model = new EmailTemplate();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-			$model->saveUploadImages();
-			$model->saveTags();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -79,7 +75,7 @@ class ProjectController extends Controller
     }
 
     /**
-     * Updates an existing Project model.
+     * Updates an existing EmailTemplate model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param string $id
      * @return mixed
@@ -89,9 +85,7 @@ class ProjectController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-			$model->saveUploadImages();
-			$model->saveTags();
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['update', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -100,7 +94,7 @@ class ProjectController extends Controller
     }
 
     /**
-     * Deletes an existing Project model.
+     * Deletes an existing EmailTemplate model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param string $id
      * @return mixed
@@ -113,15 +107,15 @@ class ProjectController extends Controller
     }
 
     /**
-     * Finds the Project model based on its primary key value.
+     * Finds the EmailTemplate model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param string $id
-     * @return Project the loaded model
+     * @return EmailTemplate the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Project::findOne($id)) !== null) {
+        if (($model = EmailTemplate::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

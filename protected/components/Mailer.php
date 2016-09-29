@@ -1,5 +1,6 @@
 <?php
 namespace app\components;
+
 use yii\swiftmailer\Message;
 use app\models\EmailTemplate;
 

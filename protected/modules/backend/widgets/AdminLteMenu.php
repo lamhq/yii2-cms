@@ -36,7 +36,7 @@ class AdminLteMenu extends \yii\widgets\Menu
         
         $url = isset($item['url']) ? Url::to($item['url']) : '';
         
-        $icon = isset($item['icon']) ? Html::tag('i', '', ['class'=>$item['icon']]) : '';
+        $icon = Html::tag('i', '', ['class'=>isset($item['icon']) ? $item['icon'] : 'fa fa-circle-o']);
 
         $rightHtml = '';
         if (isset($item['items'])) {

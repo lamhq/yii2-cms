@@ -19,7 +19,8 @@
 		"yiisoft/yii2-bootstrap": "*",
 		"yiisoft/yii2-swiftmailer": "*",
 		"lamhq/yii2-adminlte-asset": "*",
-		"asofter/yii2-imperavi-redactor": "^0.0.3"
+		"asofter/yii2-imperavi-redactor": "^0.0.3",
+		"trntv/yii2-datetime-widget": "^1.0"
 	},
 	"require-dev": {
 		"yiisoft/yii2-codeception": "*",

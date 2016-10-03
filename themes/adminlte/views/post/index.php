@@ -2,37 +2,53 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
-use app\components\Helper;
+use yii\widgets\Pjax;
+use backend\models\Post;
+use backend\models\Category;
+use app\models\User;
+use app\components\EnumColumn;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Post Management';
+$this->title = Yii::t('app', 'Posts');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="post-index">
 
-    <p>
-        <?= Html::a('Create Post', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+	<p>
+		<?= Html::a(Yii::t('app', 'Create Post'), ['create'], ['class' => 'btn btn-success']) ?>
+	</p>
+	<?php Pjax::begin(); ?>    
+		<?= GridView::widget([
+			'dataProvider' => $dataProvider,
+			'columns' => [
+				['class' => 'yii\grid\SerialColumn'],
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+				'title',
+				// 'featured_image',
+				[
+					'class' => EnumColumn::className(),
+					'attribute' => 'status',
+					'enum' => Post::getStatuses()
+				],
+				[
+					'class' => EnumColumn::className(),
+					'attribute' => 'category_id',
+					'enum' => Category::getListData()
+				],
+				[
+					'class' => EnumColumn::className(),
+					'attribute' => 'created_by',
+					'enum' => User::getListData()
+				],
+				'published_at:date',
 
-            'title',
-            'short_content:html',
-            [
-				'attribute'=>'image',
-				'format'=>'raw',
-				'value'=>function ($model, $key, $index, $column) {
-					return Helper::holderImage($model->getImageUrl(400, 150), 400, 150);
-				},
+				[
+					'class' => 'yii\grid\ActionColumn',
+					'template'=>'{update} {delete}'
+				],
 			],
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
-
+		]); ?>
+	<?php Pjax::end(); ?>
 </div>

@@ -3,10 +3,8 @@
  *
  * 1.0 - AdminLTE
  * 2.0 - Elements
- * 3.0 - Diary module
- * 4.0 - Blog module
- * 5.0 - Todo
- * 6.0 - Box
+ * 3.0 - Box
+ * 4.0 - Treeview
  */
 
 
@@ -96,9 +94,64 @@ a.asc:after {
 
 
 /* 
- * 6.0 Box
+ * 3.0 Box
  */
 
 .box-tools .dropdown-toggle {
-	cursor: pointer;
+  cursor: pointer;
+}
+
+
+/* 
+ * 4.0 treeview
+ */
+
+.tree,
+.tree ul {
+  margin:0 0 0 1em; /* indentation */
+  padding:0;
+  list-style:none;
+  color:#369;
+  position:relative;
+}
+
+.tree ul {margin-left:.5em} /* (indentation/2) */
+
+.tree:before,
+.tree ul:before {
+  content:"";
+  display:block;
+  width:0;
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  border-left:1px solid;
+}
+
+.tree li {
+  margin:0;
+  padding:0 1.5em; /* indentation + .5em */
+  line-height:2em; /* default list item's `line-height` */
+  font-weight:bold;
+  position:relative;
+}
+
+.tree li:before {
+  content:"";
+  display:block;
+  width:10px; /* same with indentation */
+  height:0;
+  border-top:1px solid;
+  margin-top:-1px; /* border top width */
+  position:absolute;
+  top:1em; /* (line-height/2) */
+  left:0;
+}
+
+.tree li:last-child:before {
+  background:white; /* same with body background */
+  height:auto;
+  top:1em; /* (line-height/2) */
+  bottom:0;
 }

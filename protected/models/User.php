@@ -23,9 +23,12 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-	const UPLOAD_DIR = 'media/user';
-	const STATUS_ACTIVE = 1;
-	const STATUS_INACTIVE = 2;
+    const STATUS_ACTIVE = 1;
+    const STATUS_INACTIVE = 0;
+
+    public static function getStatuses() {
+        return Lookup::items('status');
+    }
 
 	/**
 	 * @inheritdoc
@@ -198,63 +201,7 @@ class User extends ActiveRecord implements IdentityInterface
 		return $this->hasMany(Post::className(), ['author_id' => 'id']);
 	}
 	
-	/*
-	 * Return the resized image url
-	 * 
-	 * @author Lam Huynh
-	 */
-	public function getImageUrl($width=null, $height=null, $watermark=false) {
-		$imgFile = $this->generateImagePath($width, $height, $watermark);
-		if (!is_file($imgFile)) {
-			// resize image
-			$srcImg = $this->generateImagePath();
-			Helper::resize($srcImg, $imgFile, $width, $height, array('fit'=>false));
-		}
-		
-		$imgUrl = $this->generateImageUrl($width, $height, $watermark);
-		return is_file($imgFile) ? $imgUrl : null;
+	static public function getListData() {
+		return \yii\helpers\ArrayHelper::map(static::find()->all(), 'id', 'username');
 	}
-	
-	/*
-	 * Generate the filename corresponding to the dimension
-	 * Need to change the code when copy to another model
-	 * 
-	 * @author Lam Huynh
-	 */
-	protected function generateImagePath($width=null, $height=null, $watermark=false) {
-		$paths = array(
-			0 => Yii::getAlias('@webroot'),
-			1 => self::UPLOAD_DIR,
-			2 => $this->id,
-			3 => "{$width}x{$height}",
-			4 => $this->image
-		);
-		if ($watermark)
-			$paths[4] = 'w'.$paths[4];
-		if (!$width && !$height)
-			unset ($paths[3]);
-		return implode('/', $paths);
-	}
-	
-	/*
-	 * Generate the image url corresponding to the dimension
-	 * Need to change the code when copy to another model
-	 * 
-	 * @author Lam Huynh
-	 */
-	protected function generateImageUrl($width=null, $height=null, $watermark=false) {
-		$paths = array(
-			0 => Yii::getAlias('@web'),
-			1 => self::UPLOAD_DIR,
-			2 => $this->id,
-			3 => "{$width}x{$height}",
-			4 => $this->image
-		);
-		if ($watermark)
-			$paths[4] = 'w'.$paths[4];
-		if (!$width && !$height)
-			unset ($paths[2]);
-		return implode('/', $paths);
-	}
-	
 }

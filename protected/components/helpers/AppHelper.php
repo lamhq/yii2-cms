@@ -1,10 +1,10 @@
 <?php
-namespace app\components;
+namespace app\components\helpers;
 
 /**
  * @author Lam Huynh <lamhq.com>
  */
-class Helper
+class AppHelper
 {
     public static function setSuccess($message) {
         \Yii::$app->getSession()->setFlash('alert', [
@@ -19,5 +19,4 @@ class Helper
             'options'=>['class'=>'alert-error']
         ]);
     }
-
 }

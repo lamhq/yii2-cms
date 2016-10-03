@@ -43,6 +43,13 @@ $config = [
 			// for the mailer to send real emails.
 			'useFileTransport' => false,
 		],
+        'formatter' => [
+            'dateFormat' => 'php:d/m/Y',
+            'datetimeFormat' => 'php:d/m/Y H:i',
+            'decimalSeparator' => ',',
+            'thousandSeparator' => ' ',
+            'currencyCode' => '$',
+       ],
 	],
 	'modules' => [
 		'setup' => [ 'class' => 'setup\Module' ],

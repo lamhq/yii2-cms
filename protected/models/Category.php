@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\SluggableBehavior;
 
 /**
  * This is the model class for table "{{%category}}".
@@ -19,6 +20,13 @@ use Yii;
  */
 class Category extends \yii\db\ActiveRecord
 {
+    const STATUS_ACTIVE = 1;
+    const STATUS_INACTIVE = 0;
+
+    public static function getStatuses() {
+        return Lookup::items('status');
+    }
+
     /**
      * @inheritdoc
      */
@@ -48,8 +56,8 @@ class Category extends \yii\db\ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'name' => Yii::t('app', 'Name'),
             'slug' => Yii::t('app', 'Slug'),
-            'status' => Yii::t('app', 'Status'),
-            'parent_category_id' => Yii::t('app', 'Parent Category ID'),
+            'status' => Yii::t('app', 'Active'),
+            'parent_category_id' => Yii::t('app', 'Parent'),
         ];
     }
 
@@ -58,7 +66,7 @@ class Category extends \yii\db\ActiveRecord
      */
     public function getParentCategory()
     {
-        return $this->hasOne(Category::className(), ['id' => 'parent_category_id']);
+        return $this->hasOne(static::className(), ['id' => 'parent_category_id']);
     }
 
     /**
@@ -66,7 +74,7 @@ class Category extends \yii\db\ActiveRecord
      */
     public function getCategories()
     {
-        return $this->hasMany(Category::className(), ['parent_category_id' => 'id']);
+        return $this->hasMany(static::className(), ['parent_category_id' => 'id']);
     }
 
     /**
@@ -84,5 +92,21 @@ class Category extends \yii\db\ActiveRecord
     public static function find()
     {
         return new \app\models\query\CategoryQuery(get_called_class());
+    }
+    
+    public function behaviors() {
+        return [
+            [
+                'class' => SluggableBehavior::className(),
+                'attribute' => 'name',
+                'ensureUnique' => true,
+                'immutable'=>true,
+                // 'slugAttribute' => 'slug',
+            ],
+        ];
+    }
+
+    static public function getListData() {
+        return \yii\helpers\ArrayHelper::map(static::find()->all(), 'id', 'name');
     }
 }

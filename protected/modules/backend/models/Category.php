@@ -10,25 +10,6 @@ use yii\helpers\Url;
  */
 class Category extends \app\models\Category
 {
-
-	/*
-	 * convert category models to array for use in Menu widget
-	 */
-	public static function getCategoryMenuItems() {
-		$categories = self::findAll(['parent_category_id'=>null]);
-		return self::categoriesToMenuItems($categories);
-	}
-
-	private static function categoriesToMenuItems($categories) {
-		$items = [];
-		foreach ($categories as $category) {
-			$item = $category->toMenuItem();
-			$item['items'] = self::categoriesToMenuItems($category->categories);
-			$items[] = $item;
-		}
-		return $items;
-	}
-
 	public function toMenuItem() {
 		return [
 			'label'=>$this->name,
@@ -53,8 +34,6 @@ class Category extends \app\models\Category
 			$item = str_repeat('&nbsp;&nbsp;&nbsp;', $level).$category->name;
 			$items[$category->id] = $item;
 			$items = $items+self::categoriesToDropdownItems($category->categories, $excludeId, $level+1);
-			// $items = array_merge($items, 
-			// 	self::categoriesToDropdownItems($category->categories, $excludeId, $level+1));
 		}
 		return $items;
 	}

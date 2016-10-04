@@ -7,9 +7,9 @@ use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
-use app\assets\AppAsset;
+use yii\helpers\Url;
 
-AppAsset::register($this);
+app\assets\BootstrapThemeAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -20,68 +20,123 @@ AppAsset::register($this);
 	<?= Html::csrfMetaTags() ?>
 	<title><?= Html::encode($this->title) ?></title>
 	<?php $this->head() ?>
+	<style>
+	.custom-header-image {
+		background-image: url('<?= Url::to('@web/themes/bootstrap/images/header.jpg'); ?>');
+		width: 1600px;
+		height: 200px;
+	}
+	body {
+		background-image: url('<?= Url::to('@web/themes/bootstrap/images/background.jpg'); ?>');
+		background-repeat: repeat;
+		background-position: top left;
+		background-attachment: scroll;
+	}
+	</style>
 </head>
-<body class="home blog custom-background post-layout-small">
+<body class="">
 <?php $this->beginBody() ?>
-<div id="page" class="site">
-	<a class="skip-link screen-reader-text" href="#content">Skip to content</a>
-	<header id="masthead" class="site-header clearfix" role="banner">
-	<div class="header-main container clearfix">
-		<div id="logo" class="site-branding clearfix">
-			<h1 class="site-title"><a href="http://localhost/wp/" rel="home">Wordpress Demo</a></h1>
+<div id="page">
+	<header id="masthead" class="site-header" role="banner">
+
+		<div id="site-branding" class="site-branding">
+			<div class="custom-header-image" style="">
+				<div class="container">
+					<div class="site-branding-text">
+						<h1 class="site-title"><a href="<?= Yii::$app->homeUrl ?>" rel="home"><?= Yii::$app->name ?></a></h1>
+						<h2 class="site-description">A simple CMS site</h2>
+					</div>
+				</div>
+			</div>
 		</div>
-		<!-- .site-branding -->
-		<nav id="main-navigation" class="primary-navigation navigation clearfix" role="navigation">
-		<ul id="menu-all-pages" class="main-navigation-menu">
-			<li id="menu-item-1636" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1636"><a href="http://wpthemetestdata.wordpress.com/">Home</a></li>
-			<li id="menu-item-1637" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1637"><a href="http://localhost/wp/blog/">Blog</a></li>
-			<li id="menu-item-1638" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1638"><a href="http://localhost/wp/front-page/">Front Page</a></li>
-			<li id="menu-item-1639" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-1639"><a href="http://localhost/wp/about/">About The Tests</a>
-			<ul class="sub-menu">
-				<li id="menu-item-1697" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1697"><a href="http://localhost/wp/about/page-image-alignment/">Page Image Alignment</a></li>
-				<li id="menu-item-1698" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1698"><a href="http://localhost/wp/about/page-markup-and-formatting/">Page Markup And Formatting</a></li>
-				<li id="menu-item-1640" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1640"><a href="http://localhost/wp/about/clearing-floats/">Clearing Floats</a></li>
-				<li id="menu-item-1641" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1641"><a href="http://localhost/wp/about/page-with-comments/">Page with comments</a></li>
-				<li id="menu-item-1642" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1642"><a href="http://localhost/wp/about/page-with-comments-disabled/">Page with comments disabled</a></li>
-			</ul>
-			</li>
-			<li id="menu-item-1643" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-1643"><a href="http://localhost/wp/level-1/">Level 1</a>
-			<ul class="sub-menu">
-				<li id="menu-item-1644" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-1644"><a href="http://localhost/wp/level-1/level-2/">Level 2</a>
-				<ul class="sub-menu">
-					<li id="menu-item-1645" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1645"><a href="http://localhost/wp/level-1/level-2/level-3/">Level 3</a></li>
-					<li id="menu-item-1699" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1699"><a href="http://localhost/wp/level-1/level-2/level-3a/">Level 3a</a></li>
-					<li id="menu-item-1700" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1700"><a href="http://localhost/wp/level-1/level-2/level-3b/">Level 3b</a></li>
-				</ul>
-				</li>
-				<li id="menu-item-1701" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1701"><a href="http://localhost/wp/level-1/level-2a/">Level 2a</a></li>
-				<li id="menu-item-1702" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1702"><a href="http://localhost/wp/level-1/level-2b/">Level 2b</a></li>
-			</ul>
-			</li>
-			<li id="menu-item-1646" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1646"><a href="http://localhost/wp/lorem-ipsum/">Lorem Ipsum</a></li>
-			<li id="menu-item-1703" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1703"><a href="http://localhost/wp/page-a/">Page A</a></li>
-			<li id="menu-item-1704" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1704"><a href="http://localhost/wp/page-b/">Page B</a></li>
-		</ul>
+
+		<nav id="site-navigation" class="main-navigation" role="navigation">
+		<div class="navbar navbar-default navbar-static-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="<?= Yii::$app->homeUrl ?>" rel="home">A simple CMS site</a>
+			</div>
+			<!-- navbar-header -->
+			<div class="navbar-collapse collapse">
+				<div class="menu-testing-menu-container">
+					<?= Nav::widget([
+						'activateItems'=>false,
+				        'options' => ['class' => 'nav navbar-nav'],
+				        'items' => [
+				            ['label' => 'Home', 'url' => Yii::$app->homeUrl ],
+				            ['label' => 'About', 'url' => ['/site/about']],
+				            ['label' => 'Contact', 'url' => ['/site/contact']],
+				        ],
+				    ]); ?>
+				</div>
+			</div>
+			<!-- .container -->
+		</div>
+		</div>
+		<!-- .navbar -->
 		</nav>
-		<!-- #main-navigation -->
-	</div>
-	<!-- .header-main -->
 	</header>
-	<!-- #masthead -->
-	<div id="headimg" class="header-image">
-		<img src="http://localhost/wp/wp-content/uploads/2016/10/cropped-header.png" srcset="http://localhost/wp/wp-content/uploads/2016/10/cropped-header.png 1920w, http://localhost/wp/wp-content/uploads/2016/10/cropped-header-300x75.png 300w, http://localhost/wp/wp-content/uploads/2016/10/cropped-header-768x192.png 768w, http://localhost/wp/wp-content/uploads/2016/10/cropped-header-1024x256.png 1024w" width="1920" height="480" alt="Wordpress Demo">
-	</div>
-	<?= $content ?>
-	<div id="footer" class="footer-wrap">
-		<footer id="colophon" class="site-footer container clearfix" role="contentinfo">
-		<div id="footer-text" class="site-info">
-			<span class="credit-link">
-			Powered by <a href="http://wordpress.org" title="WordPress">WordPress</a> and <a href="https://themezee.com/themes/poseidon/" title="Poseidon WordPress Theme">Poseidon</a>. </span>
+
+	<div id="content" class="site-content">
+		<div class="container">
+			<?= $content ?>
 		</div>
-		<!-- .site-info -->
-		</footer>
-		<!-- #colophon -->
 	</div>
+	
+	<div id="sidebar-pagebottom" class="sidebar-pagebottom">
+	<aside class="section bg-lightgreen text-center clearfix">
+	<div class="container">
+		<h2 class="widget-title">THIS IS A CALL TO ACTION AREA</h2>
+		<div class="textwidget">
+			<div class="row">
+				<div class="col-lg-8 col-lg-offset-2">
+					<p>
+						This is just an example shown for the theme preview. You can put whatever you'd like.
+					</p>
+					<p>
+						<button type="button" class="btn btn-hollow btn-lg">Call To Action Button</button>
+					</p>
+				</div>
+				<!-- col-lg-8 -->
+			</div>
+			<!-- row -->
+		</div>
+		<!-- textwidget -->
+	</div>
+	<!-- container -->
+	</aside>
+</div>
+<!-- .sidebar-pagebottom -->
+<footer id="colophon" class="site-footer" role="contentinfo">
+<div class="after-footer">
+	<div class="container">
+		<div class="footer-nav-menu pull-left">
+			<nav id="footer-navigation" class="secondary-navigation" role="navigation">
+			<h1 class="menu-toggle sr-only">Footer Menu</h1>
+			<div class="sample-menu-footer-container">
+				<ul class="list-inline dividers">
+					<li><a class="smoothscroll" title="Back to top of page" href="#page"><span class="fa fa-angle-up"></span> Top</a></li>
+					<li><a title="Home" href="<?= Yii::$app->homeUrl ?>">Home</a></li>
+				</ul>
+			</div>
+			</nav>
+		</div>
+		<!-- .footer-nav-menu -->
+		<div id="site-credits" class="site-credits pull-right">
+			<span class="credits-copyright">&copy; 2016 <a href="<?= Yii::$app->homeUrl ?>" rel="home"><?= Yii::$app->name ?></a>. </span><span class="credits-theme"> by <a href="http://lamhq.com" rel="profile" target="_blank">lamhq</a>.</span>
+		</div>
+		<!-- .site-credits -->
+	</div>
+	<!-- .container -->
+</div>
+<!-- .after-footer -->
+</footer>
+<!-- #colophon -->
 </div>
 <?php $this->endBody() ?>
 </body>

@@ -18,19 +18,7 @@ use trntv\yii\datetime\DateTimeWidget;
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'short_content')->widget(
-        \yii\imperavi\Widget::className(),
-        [
-            'options' => [
-                'minHeight' => 400,
-                'maxHeight' => 400,
-                'buttonSource' => true,
-                'convertDivs' => false,
-                'removeEmptyTags' => false,
-                'imageUpload' => Yii::$app->urlManager->createUrl(['/file-storage/upload-imperavi'])
-            ]
-        ]
-    ) ?>
+    <?= $form->field($model, 'short_content')->textArea(['rows'=>5]) ?>
 
     <?= $form->field($model, 'content')->widget(
         \yii\imperavi\Widget::className(),

@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\behaviors\SluggableBehavior;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "{{%category}}".
@@ -109,4 +110,29 @@ class Category extends \yii\db\ActiveRecord
     static public function getListData() {
         return \yii\helpers\ArrayHelper::map(static::find()->all(), 'id', 'name');
     }
+
+    /*
+     * convert category models to array for use in Menu widget
+     */
+    public static function getCategoryMenuItems() {
+        $categories = self::findAll(['parent_category_id'=>null]);
+        return self::categoriesToMenuItems($categories);
+    }
+
+    protected static function categoriesToMenuItems($categories) {
+        $items = [];
+        foreach ($categories as $category) {
+            $item = $category->toMenuItem();
+            $item['items'] = self::categoriesToMenuItems($category->categories);
+            $items[] = $item;
+        }
+        return $items;
+    }
+
+    public function toMenuItem() {
+        return [
+            'label'=>$this->name,
+            'url'=> Url::to(['/category/index', 'slug'=>$this->slug]),
+        ];
+    }    
 }

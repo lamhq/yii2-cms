@@ -16,6 +16,8 @@ use Yii;
  */
 class Tag extends \yii\db\ActiveRecord
 {
+    public $postCount;
+    
     /**
      * @inheritdoc
      */
@@ -70,4 +72,12 @@ class Tag extends \yii\db\ActiveRecord
     {
         return new \app\models\query\TagQuery(get_called_class());
     }
+
+    /**
+     * @return string
+     */
+    public function getUrl() {
+        return \yii\helpers\Url::to(['tag/view', 'slug'=>$this->slug]);
+    }
+
 }

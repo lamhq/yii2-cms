@@ -1,6 +1,7 @@
 <?php
 
 namespace app\models\query;
+use app\models\Post;
 
 /**
  * This is the ActiveQuery class for [[\app\models\Post]].
@@ -30,5 +31,17 @@ class PostQuery extends \yii\db\ActiveQuery
     public function one($db = null)
     {
         return parent::one($db);
+    }
+
+    public function published()
+    {
+        $this->andWhere(['status' => Post::STATUS_ACTIVE]);
+        $this->andWhere(['<', '{{%post}}.published_at', date('Y-m-d H:i:s')]);
+        return $this;
+    }
+
+    public function recent($count) {
+        return $this->limit($count)
+        ->orderBy('published_at DESC');
     }
 }

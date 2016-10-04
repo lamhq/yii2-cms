@@ -58,6 +58,7 @@ $config = [
 	'params' => [
 		'adminEmail' => 'admin@example.com',
         'robotEmail' => 'noreply@m.mm',
+        'defaultPageSize' => 10,
 		'accessRules'=>[
 			[
 				'allow' => true,

@@ -1,7 +1,8 @@
 <?php
 
 $config = \yii\helpers\ArrayHelper::merge(require(__DIR__ . '/_common.php'), [
-
+	'layout'=>'2col-right',
+	'defaultRoute'=>'post',
 	'components' => [
 		'request' => [
 			// !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -20,7 +21,8 @@ $config = \yii\helpers\ArrayHelper::merge(require(__DIR__ . '/_common.php'), [
 				'baseUrl' => '@web/themes/bootstrap',
 				'pathMap' => [
 					'@app/views' => '@webroot/themes/bootstrap/views',
-					'@app/modules' => '@app/themes/bootstrap/views/modules',
+					'@app/widgets/views' => '@webroot/themes/bootstrap/views/widgets',
+					'@app/modules/views' => '@webroot/themes/bootstrap/views/modules',
 				],
 			],
 		],
@@ -28,6 +30,7 @@ $config = \yii\helpers\ArrayHelper::merge(require(__DIR__ . '/_common.php'), [
 			'enablePrettyUrl' => true,
 			'showScriptName' => false,
 			'rules' => [
+				'post/<slug:.*>.html' => '/post/view',
 			],
 		],
 		'assetManager' => [

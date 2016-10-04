@@ -22,12 +22,10 @@ class TagCloud extends Widget
 		foreach($tags as $tag)
 			$maxPostCount = max($maxPostCount, $tag->postCount);
 		$items = array_map(function ($tag) use ($maxPostCount) {
+			$item = $tag->toMenuItem();
 			$n = max($this->minSize, floor($tag->postCount*$this->maxSize/$maxPostCount));
-			return [
-				'label'=>$tag->name,
-				'url'=>$tag->url,
-				'options'=>['style'=>"font-size: {$n}px"]
-			];
+			$item['options'] = ['style'=>"font-size: {$n}px"];
+			return $item;
 		}, $tags);
 		return $this->render('tag-cloud', ['items'=>$items]);
 	}

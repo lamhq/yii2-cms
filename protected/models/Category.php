@@ -94,7 +94,7 @@ class Category extends \yii\db\ActiveRecord
     {
         return new \app\models\query\CategoryQuery(get_called_class());
     }
-    
+
     public function behaviors() {
         return [
             [
@@ -132,7 +132,15 @@ class Category extends \yii\db\ActiveRecord
     public function toMenuItem() {
         return [
             'label'=>$this->name,
-            'url'=> Url::to(['/category/index', 'slug'=>$this->slug]),
+            'url'=> $this->url,
         ];
-    }    
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl() {
+        return \yii\helpers\Url::to(['category/view', 'slug'=>$this->slug]);
+    }
+
 }

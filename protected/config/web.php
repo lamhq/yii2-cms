@@ -31,6 +31,8 @@ $config = \yii\helpers\ArrayHelper::merge(require(__DIR__ . '/_common.php'), [
 			'showScriptName' => false,
 			'rules' => [
 				'post/<slug:.*>.html' => '/post/view',
+				'category/<slug:.*>.html' => '/category/view',
+				'tag/<slug:.*>.html' => '/tag/view',
 			],
 		],
 		'assetManager' => [

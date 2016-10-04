@@ -8,6 +8,7 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use yii\helpers\Url;
+use app\components\helpers\AppHelper;
 
 app\assets\BootstrapThemeAsset::register($this);
 ?>
@@ -18,8 +19,10 @@ app\assets\BootstrapThemeAsset::register($this);
 	<meta charset="<?= Yii::$app->charset ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<?= Html::csrfMetaTags() ?>
-	<title><?= Html::encode($this->title) ?></title>
+	<title><?= Html::encode(AppHelper::getTitle()) ?></title>
 	<?php $this->head() ?>
+
+	<link rel="icon" href="<?= Url::to('@web/themes/bootstrap/images/icon.png'); ?>" sizes="32x32" />
 	<style>
 	.custom-header-image {
 		background-image: url('<?= Url::to('@web/themes/bootstrap/images/header.jpg'); ?>');
@@ -83,6 +86,7 @@ app\assets\BootstrapThemeAsset::register($this);
 	</header>
 
 	<div id="content" class="site-content">
+		<?= $this->blocks['content-header'] ?>
 		<div class="container">
 			<?= $content ?>
 		</div>

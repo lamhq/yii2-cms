@@ -8,6 +8,7 @@ $config = [
 	'id' => 'yii2-core',
 	'name' => 'Yii2 Core Project',
 	'vendorPath' => realpath(__DIR__ . '/../../vendor'),
+	'runtimePath' => realpath(__DIR__ . '/../../assets/runtime'),
 	'basePath' => dirname(__DIR__),
 	'timeZone' => 'Asia/Bangkok',
 	'language' => 'en-US',

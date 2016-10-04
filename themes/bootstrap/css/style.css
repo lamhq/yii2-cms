@@ -354,6 +354,11 @@ div.navbar-collapse.collapse {
 	color: #fff;
 }
 
+.tags-links > a + a::before {
+  content: ",";
+  margin-right: 3px;
+}
+
 /*--------------------------------------------------------------
 ## Comments
 --------------------------------------------------------------*/

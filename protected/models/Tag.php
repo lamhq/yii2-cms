@@ -80,4 +80,10 @@ class Tag extends \yii\db\ActiveRecord
         return \yii\helpers\Url::to(['tag/view', 'slug'=>$this->slug]);
     }
 
+    public function toMenuItem() {
+        return [
+            'label'=>$this->name,
+            'url'=>$this->url,
+        ];
+    }
 }

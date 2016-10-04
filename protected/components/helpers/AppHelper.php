@@ -1,5 +1,6 @@
 <?php
 namespace app\components\helpers;
+use yii;
 
 /**
  * @author Lam Huynh <lamhq.com>
@@ -7,16 +8,21 @@ namespace app\components\helpers;
 class AppHelper
 {
     public static function setSuccess($message) {
-        \Yii::$app->getSession()->setFlash('alert', [
+        Yii::$app->getSession()->setFlash('alert', [
             'body'=>$message,
             'options'=>['class'=>'alert-success']
         ]);
     }
 
     public static function setError($message) {
-        \Yii::$app->getSession()->setFlash('alert', [
+        Yii::$app->getSession()->setFlash('alert', [
             'body'=>$message,
             'options'=>['class'=>'alert-error']
         ]);
+    }
+
+    public static function getTitle() {
+        $t = array_filter([Yii::$app->view->title, Yii::$app->name]);
+        return implode(' | ', $t);
     }
 }

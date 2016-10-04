@@ -1,6 +1,7 @@
 <?php
 
 namespace app\models\query;
+use app\models\Category;
 
 /**
  * This is the ActiveQuery class for [[\app\models\Category]].
@@ -31,4 +32,11 @@ class CategoryQuery extends \yii\db\ActiveQuery
     {
         return parent::one($db);
     }
+
+    public function active()
+    {
+        $this->andWhere(['status' => Category::STATUS_ACTIVE]);
+        return $this;
+    }
+
 }

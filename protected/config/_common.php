@@ -13,7 +13,7 @@ $config = [
 	'timeZone' => 'Asia/Bangkok',
 	'language' => 'en-US',
 	'sourceLanguage' => 'en-US',
-	'bootstrap' => ['log'],
+	'bootstrap' => ['log', 'setting'],
 
 	'components' => [
 		'cache' => [
@@ -44,22 +44,29 @@ $config = [
 			// for the mailer to send real emails.
 			'useFileTransport' => false,
 		],
-        'formatter' => [
-            'dateFormat' => 'php:d/m/Y',
-            'datetimeFormat' => 'php:d/m/Y H:i',
-            'decimalSeparator' => ',',
-            'thousandSeparator' => ' ',
-            'currencyCode' => '$',
-       ],
+		'formatter' => [
+			'dateFormat' => 'php:d/m/Y',
+			'datetimeFormat' => 'php:d/m/Y H:i',
+			'decimalSeparator' => ',',
+			'thousandSeparator' => ' ',
+			'currencyCode' => '$',
+		],
+		'setting'=>[
+			'class' => 'app\components\Setting',
+			'cacheId' => false,
+		]
 	],
 	'modules' => [
 		'setup' => [ 'class' => 'setup\Module' ],
 		'backend' => [ 'class' => 'backend\Module' ],
 	],
+	'on beforeRequest' => function ($event) {
+		\Yii::$app->setting->applySetting();
+	},
 	'params' => [
 		'adminEmail' => 'admin@example.com',
-        'robotEmail' => 'noreply@m.mm',
-        'defaultPageSize' => 10,
+		'robotEmail' => 'noreply@m.mm',
+		'defaultPageSize' => 10,
 		'accessRules'=>[
 			[
 				'allow' => true,

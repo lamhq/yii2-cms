@@ -60,9 +60,6 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        // if (!\setup\components\Helper::isWebsiteInstalled()) {
-        //     return $this->redirect(['/setup']);
-        // }
         return $this->render('index');
     }
 

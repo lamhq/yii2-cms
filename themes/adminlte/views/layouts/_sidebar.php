@@ -18,8 +18,10 @@ use backend\widgets\AdminLteMenu;
 					['label'=>Yii::t('app', 'Post'), 'url'=>['/backend/post/index'] ],
 					['label'=>Yii::t('app', 'Category'), 'url'=>['/backend/category/index'] ],
 				]],
-				['label'=>Yii::t('app', 'System'), 'icon'=>'fa fa-edit', 'items'=>[
-					['label'=>Yii::t('app', 'Configuration'), 'url'=>['/backend/setting/index'] ],
+				['label'=>Yii::t('app', 'System'), 'icon'=>'fa fa-cogs', 'items'=>[
+					['label'=>Yii::t('app', 'Configuration'), 'url'=>['/backend/setting/index'], 'icon'=>'fa fa-wrench' ],
+					['label'=>Yii::t('app', 'User'), 'url'=>['/backend/account/index'], 'icon'=>'fa fa-user' ],
+					['label'=>Yii::t('app', 'Role'), 'url'=>['/backend/role/index'], 'icon'=>'fa fa-group' ],
 				]],
 			]
 		]) ?>

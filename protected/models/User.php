@@ -23,12 +23,12 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    const STATUS_ACTIVE = 1;
-    const STATUS_INACTIVE = 0;
+	const STATUS_ACTIVE = 1;
+	const STATUS_INACTIVE = 0;
 
-    public static function getStatuses() {
-        return Lookup::items('status');
-    }
+	public static function getStatuses() {
+		return Lookup::items('status');
+	}
 
 	/**
 	 * @inheritdoc
@@ -204,4 +204,21 @@ class User extends ActiveRecord implements IdentityInterface
 	static public function getListData() {
 		return \yii\helpers\ArrayHelper::map(static::find()->all(), 'id', 'username');
 	}
+	
+	/**
+	 * @inheritdoc
+	 */
+	public function attributeLabels()
+	{
+		return [
+			'created_at' => Yii::t('app', 'Date Joined'),
+			'status' => Yii::t('app', 'Active'),
+		];
+	}
+
+	public function beforeDelete() {
+		$auth = Yii::$app->authManager;
+		$auth->revokeAll($this->id);		
+		return parent::beforeDelete();
+	}    
 }

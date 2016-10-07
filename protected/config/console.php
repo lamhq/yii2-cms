@@ -2,7 +2,7 @@
 
 Yii::setAlias('@tests', dirname(__DIR__) . '/tests/codeception');
 
-$config = [
+$config = \yii\helpers\ArrayHelper::merge(require(__DIR__ . '/_common.php'), [
     'controllerNamespace' => 'app\commands',
     /*
     'controllerMap' => [
@@ -11,7 +11,7 @@ $config = [
         ],
     ],
     */
-];
+]);
 
 if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment

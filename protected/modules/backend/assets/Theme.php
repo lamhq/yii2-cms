@@ -13,6 +13,7 @@ class Theme extends AssetBundle
 	
 	public $js = [
 		'js/common.js',
+		'js/app.js',
 	];
 
 	public $depends = [

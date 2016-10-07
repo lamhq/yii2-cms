@@ -13,7 +13,7 @@ $this->title = Yii::t('app', 'Edit account')
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?php echo $form->field($model, 'username') ?>
+    <?php echo $form->field($model, 'username')->textInput(['readonly'=>'readonly']) ?>
 
     <?php echo $form->field($model, 'email') ?>
 

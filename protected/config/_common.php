@@ -54,7 +54,7 @@ $config = [
 		'setting'=>[
 			'class' => 'app\components\Setting',
 			'cacheId' => false,
-		]
+		],
 	],
 	'modules' => [
 		'setup' => [ 'class' => 'setup\Module' ],

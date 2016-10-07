@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2dceb760cc861f08554ab301bb40e86c",
-    "content-hash": "92972f199ed13aa2561d62887ec9cdb6",
+    "hash": "ce46373cc568290d20cb019f962ce713",
+    "content-hash": "dd80cac8e0f589bcef9184da95e0e512",
     "packages": [
         {
             "name": "asofter/yii2-imperavi-redactor",
@@ -311,6 +311,52 @@
                 "jquery",
                 "mask",
                 "plugins"
+            ]
+        },
+        {
+            "name": "bower-asset/jstree",
+            "version": "3.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vakata/jstree.git",
+                "reference": "bb0473ae8cfc205585b6404ef86f650df2f6996e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vakata/jstree/zipball/bb0473ae8cfc205585b6404ef86f650df2f6996e",
+                "reference": "bb0473ae8cfc205585b6404ef86f650df2f6996e",
+                "shasum": ""
+            },
+            "require": {
+                "bower-asset/jquery": ">=1.9.1"
+            },
+            "type": "bower-asset-library",
+            "extra": {
+                "bower-asset-main": [
+                    "./dist/jstree.js",
+                    "./dist/themes/default/style.css"
+                ],
+                "bower-asset-ignore": [
+                    "**/.*",
+                    "docs",
+                    "demo",
+                    "libs",
+                    "node_modules",
+                    "test",
+                    "libs",
+                    "jstree.jquery.json",
+                    "gruntfile.js",
+                    "package.json",
+                    "bower.json",
+                    "component.json",
+                    "LICENCE-MIT",
+                    "README.md"
+                ]
+            },
+            "keywords": [
+                "jstree",
+                "tree",
+                "ui"
             ]
         },
         {

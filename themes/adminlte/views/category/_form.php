@@ -1,13 +1,12 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\bootstrap\ActiveForm;
 use backend\models\Category;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Category */
 /* @var $form yii\widgets\ActiveForm */
-$this->registerJs("$('.field-category-status').addClass('checkbox');", \yii\web\View::POS_END);
 ?>
 
 <div class="category-form">

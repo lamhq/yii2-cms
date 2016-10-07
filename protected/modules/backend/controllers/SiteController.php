@@ -5,7 +5,7 @@ namespace backend\controllers;
 use Yii;
 use yii\web\Controller;
 use backend\models\LoginForm;
-use backend\models\AccountForm;
+use backend\models\Profile;
 use app\models\ForgotPasswordForm;
 use app\models\ResetPasswordForm;
 use app\components\Helper;
@@ -63,7 +63,7 @@ class SiteController extends Controller {
 
 	public function actionAccount() {
 		$user = Yii::$app->user->identity;
-		$model = new AccountForm();
+		$model = new Profile();
 		$model->username = $user->username;
 		$model->email = $user->email;
 		if ($model->load($_POST) && $model->validate()) {

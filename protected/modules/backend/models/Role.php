@@ -67,6 +67,31 @@ class Role extends Model
 		return Yii::$app->authManager->getRoles();
 	}
 
+	static public function getMasterRoles() {
+		$list = (new Query)
+			->from('{{%master_role}}')
+			->column(Yii::$app->authManager->db);
+		return array_filter(self::getRoles(), function ($role) use ($list) {
+			return in_array($role->name, $list);
+		});
+	}
+
+	// get assigned top permissions of a role
+	static public function getAssignedPermissions($role) {
+		// $auth = Yii::$app->authManager;
+		// $query = (new Query)
+		// 	->select(['item.name'])
+		// 	->from($auth->itemChildTable.' AS itemChild')
+		// 	->join('INNER JOIN', $auth->itemTable.' AS item', 'itemChild.child=item.name')
+		// 	->where([
+		// 		'parent' => $role,
+		// 		'item.type'=> Item::TYPE_PERMISSION
+		// 	]);
+
+		// return $query->column($auth->db);
+		return Permission::getChildPermissions($role);
+	}
+
 	static public function find($id) {
 		$auth = Yii::$app->authManager;
 		$role = $auth->getRole($id);
@@ -79,7 +104,7 @@ class Role extends Model
 			'isNewRecord'=>false
 		]);
 
-		$ap = $model->getAssignedPermissions();
+		$ap = Permission::getChildPermissions($role->name);
 		$isMaster = $auth->db->createCommand('SELECT COUNT(*) FROM {{%master_role}} WHERE name=:name')
 			->bindValue(':name', $id)
 			 ->queryScalar();
@@ -91,77 +116,6 @@ class Role extends Model
 
 		$model->permissions = json_encode($ap);
 		return $model;
-	}
-
-	// get assigned top permissions of a role
-	public function getAssignedPermissions() {
-		$role = $this->name;
-		$auth = Yii::$app->authManager;
-		$query = (new Query)
-			->select(['item.name'])
-			->from($auth->itemChildTable.' AS itemChild')
-			->join('INNER JOIN', $auth->itemTable.' AS item', 'itemChild.child=item.name')
-			->where([
-				'parent' => $role,
-				'item.type'=> Item::TYPE_PERMISSION
-			]);
-
-		return $query->column();
-	}
-
-	static public function getPermissions() {
-		$auth = Yii::$app->authManager;
-		return $auth->db->cache(function ($db) use ($auth) {
-			return (new Query)
-				->from($auth->itemTable)
-				->where(['type'=> Item::TYPE_PERMISSION])
-				->all($db);
-		});
-	}
-
-	static public function getPermissionRelation() {
-		$auth = Yii::$app->authManager;
-		return $auth->db->cache(function ($db) use ($auth) {
-			return (new Query)
-				->from($auth->itemChildTable.' AS itemChild')
-				->join('INNER JOIN', $auth->itemTable.' AS item', 'itemChild.parent=item.name')
-				->where(['item.type'=> Item::TYPE_PERMISSION])
-				->all($db);
-		});
-	}
-
-	// get child permissions of a parent. if parent is null, return top permissions
-	static public function getChildPermissions($parent=null) {
-		// find top permissions
-		if (!$parent) {
-			$childs = array_column(self::getPermissionRelation(), 'child');
-			return array_filter(self::getPermissions(), function($item) use ($childs) {
-				return !in_array($item['name'], $childs);
-			});
-		}
-
-		// find child permissions
-		$childs = array_column(
-			array_filter(self::getPermissionRelation(), function($item) use ($parent) {
-				return $item['parent'] == $parent;
-			}),
-			'child');
-		return array_filter(self::getPermissions(), function($item) use ($childs) {
-			return in_array($item['name'], $childs);
-		});
-	}
-
-	// get all permissions in hierarchy
-	static public function getPermissionTree() {
-		$buildTree = function ($parent=null) use (&$buildTree) {
-			return array_map(function ($item) use ($buildTree) {
-				$data = $item;
-				$data['childs'] = $buildTree($item['name']);
-				return $data;
-			}, self::getChildPermissions($parent) );
-		};
-
-		return $buildTree();
 	}
 
 	public function save() {
@@ -182,7 +136,7 @@ class Role extends Model
 			$auth->update($this->name, $role);
 
 			// remove old assigned permissions
-			foreach($this->getAssignedPermissions() as $permission) {
+			foreach(Permission::getChildPermissions($role->name) as $permission) {
 				$auth->removeChild($role, $auth->getPermission($permission));
 			}
 
@@ -195,7 +149,7 @@ class Role extends Model
 					$auth->db->createCommand()
 						->insert('{{%master_role}}', ['name'=>$this->name])
 						->execute();				
-					$newPermissions = array_column(Role::getChildPermissions(null), 'name');
+					$newPermissions = array_column(Permission::getChildPermissions(null), 'name');
 					break;
 				case 'custom':
 					$newPermissions = json_decode($this->permissions, true);
@@ -218,4 +172,8 @@ class Role extends Model
 		return true;
 	}
 
+	public function delete() {
+		$auth = Yii::$app->authManager;
+		$auth->remove($auth->getRole($this->name));
+	}
 }

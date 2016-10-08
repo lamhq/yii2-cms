@@ -22,6 +22,7 @@ use backend\widgets\AdminLteMenu;
 					['label'=>Yii::t('app', 'Configuration'), 'url'=>['/backend/setting/index'], 'icon'=>'fa fa-wrench' ],
 					['label'=>Yii::t('app', 'User'), 'url'=>['/backend/account/index'], 'icon'=>'fa fa-user' ],
 					['label'=>Yii::t('app', 'Role'), 'url'=>['/backend/role/index'], 'icon'=>'fa fa-group' ],
+					['label'=>Yii::t('app', 'Permission'), 'url'=>['/backend/permission/index'], 'icon'=>'fa fa-group' ],
 				]],
 			]
 		]) ?>

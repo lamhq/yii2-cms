@@ -21,7 +21,8 @@
 		"lamhq/yii2-adminlte-asset": "*",
 		"asofter/yii2-imperavi-redactor": "^0.0.3",
 		"trntv/yii2-datetime-widget": "^1.0",
-		"bower-asset/jstree": "^3.3"
+		"bower-asset/jstree": "^3.3",
+		"kartik-v/yii2-widget-select2": "^2.0"
 	},
 	"require-dev": {
 		"yiisoft/yii2-codeception": "*",

@@ -3,6 +3,7 @@
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
 use backend\models\Role;
+use backend\models\Permission;
 use app\models\User;
 use app\widgets\TreeCheckbox;
 
@@ -32,7 +33,7 @@ $this->registerJs("app.setupRoleForm();");
 			<?= TreeCheckbox::widget([
 				'model'=>$model,
 				'attribute'=>'permissions',
-				'tree'=>Role::getPermissionTree()
+				'tree'=>Permission::getPermissionTree()
 			]); ?>
 		</div>
 	</div>

@@ -45,17 +45,25 @@ class Permission extends Model
 	}
 
 	static public function getPermissions() {
-		return Yii::$app->authManager->getPermissions();
+		$key = 'tmp-pers';
+		if (!isset(Yii::$app->params[$key])) {
+			Yii::$app->params[$key] = Yii::$app->authManager->getPermissions();
+		}
+		return Yii::$app->params[$key];
 	}
 
-	static public function getPermissionRelation() {
-		$auth = Yii::$app->authManager;
-		return (new Query)
-			->select('itemChild.*')
-			->from($auth->itemChildTable.' AS itemChild')
-			// ->join('INNER JOIN', $auth->itemTable.' AS item', 'itemChild.parent=item.name')
-			// ->where(['item.type'=> Item::TYPE_PERMISSION])
-			->all($auth->db);
+	static protected function getPermissionRelation() {
+		$key = 'tmp-per-relation';
+		if (!isset(Yii::$app->params[$key])) {
+			$auth = Yii::$app->authManager;
+			Yii::$app->params[$key] = (new Query)
+				->select('itemChild.*')
+				->from($auth->itemChildTable.' AS itemChild')
+				->join('INNER JOIN', $auth->itemTable.' AS item', 'itemChild.parent=item.name')
+				->where(['item.type'=> Item::TYPE_PERMISSION])
+				->all($auth->db);
+		}
+		return Yii::$app->params[$key];
 	}
 
 	// get child permissions. if parent is null, return top permissions
@@ -120,6 +128,20 @@ class Permission extends Model
 		};
 
 		return $buildTree();
+	}
+
+	static protected function onPermissionChange() {
+		// re-assign top permissions to master roles
+		$auth = Yii::$app->authManager;
+		foreach (Role::getMasterRoles() as $role) {
+			foreach(Role::getAssignedPermissions($role->name) as $permission) {
+				$auth->removeChild($role, $permission);
+			}
+
+			foreach(self::getChildPermissions() as $permission) {
+				$auth->addChild($role, $permission);
+			}
+		}
 	}
 
 	static public function find($name) {
@@ -187,32 +209,24 @@ class Permission extends Model
 		} catch(\Exception $e) {
 			$transaction->rollBack();
 			throw $e;
-			return false;
+			// return false;
 		}
 		return true;
 	}
 
 	public function delete() {
 		$auth = Yii::$app->authManager;
-		$auth->remove($auth->getPermission($this->name));
-		self::onPermissionChange();
-	}
-
-	static protected function onPermissionChange() {
-		$cache = Yii::$app->cache;
-		$cache->delete('rbac-permission-relation');
-		$cache->delete('rbac-permissions');
-
-		// re-assign top permissions to master roles
-		$auth = Yii::$app->authManager;
-		foreach (Role::getMasterRoles() as $role) {
-			foreach(self::getChildPermissions($role->name) as $permission) {
-				$auth->removeChild($role, $permission);
-			}
-
-			foreach(self::getChildPermissions() as $permission) {
-				$auth->addChild($role, $permission);
-			}
+		$transaction = $auth->db->beginTransaction();
+		try {
+			$auth->remove($auth->getPermission($this->name));
+			self::onPermissionChange();
+			$transaction->commit();
+		} catch(\Exception $e) {
+			$transaction->rollBack();
+			throw $e;
+			// return false;
 		}
+		return true;
 	}
+
 }

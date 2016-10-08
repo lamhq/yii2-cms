@@ -36,7 +36,6 @@ class PermissionController extends Controller
 	 */
 	public function actionIndex($id=null)
 	{
-		// var_dump(Yii::$app->authManager->getPermissions(),Permission::getPermissions());die;
 		$model = $id ? $this->findModel($id) : new Permission(['scenario'=>'insert']);
 
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {

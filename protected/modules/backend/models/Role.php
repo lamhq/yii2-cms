@@ -68,28 +68,23 @@ class Role extends Model
 	}
 
 	static public function getMasterRoles() {
-		$list = (new Query)
-			->from('{{%master_role}}')
-			->column(Yii::$app->authManager->db);
+		$list = self::getMasterRoleNames();
 		return array_filter(self::getRoles(), function ($role) use ($list) {
 			return in_array($role->name, $list);
 		});
 	}
 
-	// get assigned top permissions of a role
-	static public function getAssignedPermissions($role) {
-		// $auth = Yii::$app->authManager;
-		// $query = (new Query)
-		// 	->select(['item.name'])
-		// 	->from($auth->itemChildTable.' AS itemChild')
-		// 	->join('INNER JOIN', $auth->itemTable.' AS item', 'itemChild.child=item.name')
-		// 	->where([
-		// 		'parent' => $role,
-		// 		'item.type'=> Item::TYPE_PERMISSION
-		// 	]);
+	static protected function getMasterRoleNames() {
+		return (new Query)
+			->from('{{%master_role}}')
+			->column(Yii::$app->authManager->db);
+	}
 
-		// return $query->column($auth->db);
-		return Permission::getChildPermissions($role);
+	// get directly assigned permissions of a role
+	static public function getAssignedPermissions($role) {
+		return array_filter(Yii::$app->authManager->getChildren($role), function ($item) {
+			return $item->type==Item::TYPE_PERMISSION;
+		});
 	}
 
 	static public function find($id) {
@@ -104,17 +99,18 @@ class Role extends Model
 			'isNewRecord'=>false
 		]);
 
-		$ap = Permission::getChildPermissions($role->name);
-		$isMaster = $auth->db->createCommand('SELECT COUNT(*) FROM {{%master_role}} WHERE name=:name')
-			->bindValue(':name', $id)
-			 ->queryScalar();
+		$assigneds = ArrayHelper::getColumn(
+			self::getAssignedPermissions($role->name)
+			, 'name', false);
+		$model->permissions = json_encode($assigneds);
+
+		$isMaster = in_array($model->name, self::getMasterRoleNames());
 		if ($isMaster) {
 			$model->access = 'all';
 		} else {
-			$model->access = !$ap ? null : 'custom';
+			$model->access = !$assigneds ? null : 'custom';
 		}
 
-		$model->permissions = json_encode($ap);
 		return $model;
 	}
 
@@ -136,8 +132,8 @@ class Role extends Model
 			$auth->update($this->name, $role);
 
 			// remove old assigned permissions
-			foreach(Permission::getChildPermissions($role->name) as $permission) {
-				$auth->removeChild($role, $auth->getPermission($permission));
+			foreach(self::getAssignedPermissions($role->name) as $permission) {
+				$auth->removeChild($role, $permission);
 			}
 
 			// assign new permissions

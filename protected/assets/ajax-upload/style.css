@@ -1,0 +1,16 @@
+.ajax-upload-widget .inn, 
+.sortable-placeholder {
+  height: 200px;
+  overflow: hidden;
+  background-color: #ccc;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.ajax-upload-widget .remove {
+  font-size: 40px;
+  left: 44%;
+  position: absolute;
+  top: 41%;
+  color: #000;
+}

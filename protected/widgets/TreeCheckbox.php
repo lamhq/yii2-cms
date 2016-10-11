@@ -10,10 +10,13 @@ class TreeCheckbox extends InputWidget
 
 	public function run() {
 		$this->registerClientScript();
-		$inputHtml = $this->hasModel() ? 
+		return $this->render('tree-checkbox');
+	}
+
+	public function getInputTag() {
+		return $this->hasModel() ? 
 			Html::activeHiddenInput($this->model, $this->attribute, $this->options) :
 			Html::hiddenInput($this->name, $this->value, $this->options);
-		return $this->render('tree-checkbox', ['input'=>$inputHtml]);
 	}
 
 	/**

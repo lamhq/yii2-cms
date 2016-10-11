@@ -59,7 +59,7 @@ use kartik\select2\Select2;
 				
 				<?php if (!$model->isNewRecord): ?>
 				<?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->name], [
-					'class' => 'btn btn-danger',
+					'class' => 'btn btn-danger pull-right',
 					'data' => [
 						'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
 						'method' => 'post',

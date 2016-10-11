@@ -50,6 +50,10 @@ class SiteController extends Controller
 				'class' => 'yii\captcha\CaptchaAction',
 				'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
 			],
+			'upload' => [
+				'class' => 'app\components\UploadAction',
+				'disableCsrf'=>true
+			],
 		];
 	}
 

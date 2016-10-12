@@ -7,7 +7,7 @@ use yii\base\Action;
 use yii\web\Response;
 use yii\helpers\Url;
 use yii\helpers\FileHelper;
-
+use yii\base\ErrorException;
 use app\components\helpers\StringHelper;
 
 class UploadAction extends Action {
@@ -17,9 +17,6 @@ class UploadAction extends Action {
 	 */
 	public $disableCsrf = true;
 
-	/**
-	 *
-	 */
 	public function init() {
 		\Yii::$app->response->format = Response::FORMAT_JSON;
 
@@ -32,7 +29,7 @@ class UploadAction extends Action {
 		$response = array();
 		try {
 			if ($_FILES['ajax-file']['error'] > 0) {
-				throw new Exception('An error ocurred when uploading.');
+				throw new ErrorException('An error ocurred when uploading.');
 			}
 
 			$oldName = StringHelper::sanitize($_FILES['ajax-file']['name']);
@@ -53,8 +50,7 @@ class UploadAction extends Action {
 				'label'=>$oldName,
 				'status'=>'success'
 			];
-			$response['value'] = $filename;
-		} catch (Exception $ex) {
+		} catch (\yii\base\ErrorException $ex) {
 			$response = [
 				'message'=>$ex->getMessage(),
 				'status'=>'error'

@@ -60,24 +60,27 @@ class AjaxUpload extends InputWidget
 	public function run() {
 		$model = $this->model;
 		$attribute = $this->attribute;
-		$value = $model->$attribute;
-		$items = $this->multiple ? $value : [$value];
-		$this->id = 'yw'.time().rand(0,99);
-		$this->options = array_merge([
-			'id' => $this->id,
+		$items = $model->$attribute;
+		if (!$items) {
+			$items = [];
+		} elseif (!$this->multiple) {
+			$items = [$items];
+		}
+		$options = [
 			'url' => Url::to($this->url, true),
 			'extensions' => $this->extensions,
 			'maxSize' => $this->maxSize,
 			'multiple' => $this->multiple,
-		], $this->options);
-		if (!isset($this->options['name'])) {
-			$this->options['name'] = Html::getInputName($this->model, $this->attribute);
+			'items'=>$items
+		];
+		if ( !isset($options['name']) ) {
+			$options['name'] = Html::getInputName($this->model, $this->attribute);
 		}
-		
+		$this->options = $options;
 		$this->registerClientScript();
 		return $this->render('ajax-upload', [
-			'items'=>$items,
-			'options'=>$this->options
+			'id' => $this->id,
+			'options'=>$options
 		]);
 	}
 
@@ -89,6 +92,7 @@ class AjaxUpload extends InputWidget
 		$view=$this->view;
 		AjaxUploadAsset::register($view);
 		$options = json_encode($this->options);
+		$this->id = 'yw'.time().rand(0,99);
 		$view->registerJs("$('#{$this->id}').ajaxUpload({$options});");
 	}
 }

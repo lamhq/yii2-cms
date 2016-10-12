@@ -13,7 +13,7 @@ $config = [
 	'timeZone' => 'Asia/Bangkok',
 	'language' => 'en-US',
 	'sourceLanguage' => 'en-US',
-	'bootstrap' => ['log', 'setting'],
+	'bootstrap' => ['setting'],
 
 	'components' => [
 		'cache' => [

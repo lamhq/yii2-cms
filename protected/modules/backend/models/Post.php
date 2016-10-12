@@ -40,11 +40,11 @@ class Post extends \app\models\Post
 
 	public function afterFind () {
 		$this->tagNames = ArrayHelper::getColumn($this->tags, 'name');
-		$this->featuredImage = [
+		$this->featuredImage = $this->featured_image ? [
 			'value'=>$this->featured_image,
 			'label' => basename($this->featured_image),
 			'url'=>Url::base().$this->featured_image
-		];
+		] : null;
 		parent::afterFind();
 	}
 

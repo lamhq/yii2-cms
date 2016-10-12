@@ -1,16 +1,49 @@
-.ajax-upload-widget .inn, 
-.sortable-placeholder {
-  height: 200px;
-  overflow: hidden;
-  background-color: #ccc;
+.ajax-upload-widget .files { overflow: hidden }
+
+.ajax-upload-widget .item {
+  height: 150px;
+  width:150px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  float: left;
+  overflow:hidden;
   border-radius: 10px;
-  cursor: pointer;
+  position: relative;
+  cursor: move;
+  text-align: center;
 }
+
+.ajax-upload-widget .label {
+  bottom: 0;
+  left: 0;
+  background-color: #000;
+  color: #fff;
+  font-weight: bold;
+  padding: 5px 0;
+  position: absolute;
+  width: 100%;
+  opacity: 0.8;
+}
+
+.ajax-upload-widget .item i {
+  margin-top: 40px;
+  display: none;
+}
+.ajax-upload-widget .item.not-image i { display: block; }
 
 .ajax-upload-widget .remove {
   font-size: 40px;
-  left: 44%;
   position: absolute;
+  left: 40%;
   top: 41%;
   color: #000;
+  cursor: pointer;
+  display: none;
+}
+.ajax-upload-widget .item:hover .remove { display: block }
+
+.ajax-upload-widget .progress {
+  margin-top: 40%;
+  width: 100%;
+  position: absolute;
 }

@@ -123,7 +123,6 @@ class UserToken extends ActiveRecord
 		]);
 
 		if (!$model->save()) {
-			var_dump($model->getErrors());die;
 			throw new InvalidCallException;
 		};
 

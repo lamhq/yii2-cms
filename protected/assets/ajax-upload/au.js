@@ -33,6 +33,7 @@ $.fn.ajaxUpload = function($options) {
 		data = $.extend({ label:'', url:'', value:'' }, data);
 		if ( (/\.(gif|jpg|jpeg|tiff|png|bmp)$/i).test(data.value) ) {
 			item.find('img').prop('src', data.url);
+			item.removeClass('not-image');
 		} else {
 			item.addClass('not-image');
 		}

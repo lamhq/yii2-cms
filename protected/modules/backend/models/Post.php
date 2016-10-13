@@ -6,6 +6,7 @@ use Yii;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use app\models\Tag;
+use app\components\UploadBehavior;
 
 /**
  * @inheritdoc
@@ -38,13 +39,23 @@ class Post extends \app\models\Post
 		]);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
+	public function behaviors()
+	{
+		return array_merge(parent::behaviors(), [
+			'saveFeaturedImage' => [
+				'class' => UploadBehavior::className(),
+				'multiple' => false,
+				'valueAttribute'=>'featured_image',
+				'formAttribute'=>'featuredImage',
+			],
+		]);
+	}
+
 	public function afterFind () {
 		$this->tagNames = ArrayHelper::getColumn($this->tags, 'name');
-		$this->featuredImage = $this->featured_image ? [
-			'value'=>$this->featured_image,
-			'label' => basename($this->featured_image),
-			'url'=>Url::base().$this->featured_image
-		] : null;
 		parent::afterFind();
 	}
 

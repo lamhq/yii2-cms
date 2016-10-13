@@ -12,7 +12,10 @@ use yii\helpers\FileHelper as YiiFileHelper;
 class FileHelper extends YiiFileHelper {
 
 	static protected function getModelUploadPath($model) {
-		return 'post';
+		if ($model instanceof \app\models\Post) {
+			return 'post';
+		}
+		return '';
 	}
 
 	/**
@@ -22,10 +25,12 @@ class FileHelper extends YiiFileHelper {
 	 * @return string the absolute path for storage directory in system
 	 */
 	static public function getModelFileUrl($model, $filename) {
+		if ($model->isNewRecord) return '';
+
 		$parts = [
 			Url::base(true),
 			Yii::$app->params['storagePath'],
-			self::getModelUploadPath(),
+			self::getModelUploadPath($model),
 			$model->id,
 			rawurlencode($filename)
 		];
@@ -39,10 +44,12 @@ class FileHelper extends YiiFileHelper {
 	 * @return string the absolute path for storage directory in system
 	 */
 	static public function getModelFilePath($model, $filename) {
+		if ($model->isNewRecord) return '';
+		
 		$parts = [
 			Yii::getAlias('@webroot'),
 			Yii::$app->params['storagePath'],
-			self::getModelUploadPath(),
+			self::getModelUploadPath($model),
 			$model->id,
 			$filename
 		];

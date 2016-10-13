@@ -1,3 +1,5 @@
+.ajax-upload-widget .btn-file { margin-bottom: 10px; }
+
 .ajax-upload-widget .files { overflow: hidden }
 
 .ajax-upload-widget .item {

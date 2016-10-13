@@ -66,6 +66,7 @@ $config = [
 	'params' => [
 		'adminEmail' => 'admin@example.com',
 		'robotEmail' => 'noreply@m.mm',
+		'storagePath'=>'media',	// relative storage path base on webroot
 		'defaultPageSize' => 10,
 		'accessRules'=>[
 			[

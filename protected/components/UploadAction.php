@@ -6,9 +6,8 @@ use Yii;
 use yii\base\Action;
 use yii\web\Response;
 use yii\helpers\Url;
-use yii\helpers\FileHelper;
 use yii\base\ErrorException;
-use app\components\helpers\StringHelper;
+use app\components\helpers\FileHelper;
 
 class UploadAction extends Action {
 
@@ -32,22 +31,25 @@ class UploadAction extends Action {
 				throw new ErrorException('An error ocurred when uploading.');
 			}
 
-			$oldName = StringHelper::sanitize($_FILES['ajax-file']['name']);
-			$filename = time().'-'.$oldName;
-			$relPath = '/assets/upload/'.$filename;
-			$absPath = FileHelper::normalizePath(Yii::getAlias('@webroot').$relPath);
-			$dirPath = dirname($absPath);
-			if (!file_exists($dirPath)) {
+			$orgName = $_FILES['ajax-file']['name'];
+			$tmpPath = FileHelper::createPathForSave(
+				FileHelper::getTemporaryFilePath($orgName)
+			);
+			$value = basename($tmpPath);
+			$label = $orgName;
+			$url = FileHelper::getTemporaryFileUrl($value);
+
+			// move upload file to temporary directory
+			$dirPath = dirname($tmpPath);
+			if (!file_exists($dirPath))
 				mkdir($dirPath, 0777, true);
-			}
-			if (!move_uploaded_file($_FILES['ajax-file']['tmp_name'], $absPath)) {
-				throw new Exception('Error uploading file - check destination is writeable.');
-			}
+			if ( !move_uploaded_file($_FILES['ajax-file']['tmp_name'], $tmpPath) )
+				throw new ErrorException('Error uploading file - check destination is writeable.');
 
 			$response = [
-				'value'=>$relPath,
-				'url'=>Url::base(true).$relPath,
-				'label'=>$oldName,
+				'value'=>$value,
+				'url'=>$url,
+				'label'=>$label,
 				'status'=>'success'
 			];
 		} catch (\yii\base\ErrorException $ex) {

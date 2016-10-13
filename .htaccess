@@ -1,3 +1,5 @@
+Options -Indexes 
+
 # use mod_rewrite for pretty URL support
 RewriteEngine on
 

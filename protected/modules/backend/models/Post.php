@@ -45,7 +45,7 @@ class Post extends \app\models\Post
 	public function behaviors()
 	{
 		return array_merge(parent::behaviors(), [
-			'saveFeaturedImage' => [
+			[
 				'class' => UploadBehavior::className(),
 				'multiple' => false,
 				'valueAttribute'=>'featured_image',

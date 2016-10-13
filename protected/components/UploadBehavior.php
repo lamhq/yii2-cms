@@ -59,7 +59,6 @@ class UploadBehavior extends Behavior
 
 	public function afterSaveSingle($event) {
 		$model = $this->owner;
-		$model->detachBehavior('saveFeaturedImage');
 		$valueAttribute = $this->valueAttribute;
 
 		// move existings file to tmp dir
@@ -76,7 +75,7 @@ class UploadBehavior extends Behavior
 		if ($fileUpload) {
 			$value = $fileUpload['value'];
 			$tmpPath = isset($map[$value]) ? $map[$value] : FileHelper::getTemporaryFilePath($value);
-			$filePath = FileHelper::createPathForSave(FileHelper::getModelFilePath($model, $value));
+			$filePath = FileHelper::createPathForSave(FileHelper::getModelFilePath($model, $fileUpload['label']));
 			$filename = basename(($filePath));
 			if ( is_file($tmpPath) )
 				rename($tmpPath, $filePath);
@@ -84,7 +83,8 @@ class UploadBehavior extends Behavior
 			$filename = '';
 		}
 		$model->$valueAttribute = $filename;
-		$model->update([$valueAttribute]);
+		$model->db->createCommand()
+			->update($model->tableName(), [$valueAttribute => $filename])->execute();;
 	}
 
 }

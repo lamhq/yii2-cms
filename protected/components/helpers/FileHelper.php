@@ -89,6 +89,8 @@ class FileHelper extends YiiFileHelper {
 			$path = $parts['dirname'].DIRECTORY_SEPARATOR.$parts['filename'].$i.'.'.$parts['extension'];
 			$i++;
 		}
+		if ( !file_exists(dirname($path)) )
+			mkdir(dirname($path));
 		return $path;
 	}
 

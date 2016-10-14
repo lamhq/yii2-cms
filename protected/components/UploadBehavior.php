@@ -53,8 +53,6 @@ class UploadBehavior extends Behavior
 			'label' => $filename,
 			'url' => FileHelper::getModelFileUrl($model, $filename)
 		] : null;
-
-		FileHelper::getModelFileUrl($model, $filename);
 	}
 
 	public function afterSaveSingle($event) {
@@ -87,4 +85,50 @@ class UploadBehavior extends Behavior
 			->update($model->tableName(), [$valueAttribute => $filename])->execute();;
 	}
 
+	public function afterFindMultiple() {
+		$model = $this->owner;
+		$fileField = $this->valueAttribute;
+		$files = $model->{$this->relation};
+		$items = [];
+		foreach($files as $file) {
+			$items[] = [
+				'value' => $file->$fileField,
+				'label' => $file->$fileField,
+				'url' => FileHelper::getModelFileUrl($model, $file->$fileField)
+			];
+		}
+		$model->{$this->formAttribute} = $items;
+	}
+
+	public function afterSaveMultiple() {
+		$model = $this->owner;
+		$relation = $this->relation;
+
+		// move existings files to tmp dir + delete old relations
+		$map = [];
+		foreach($model->$relation as $file) {
+			$filename = $file->filename;
+			$filePath = FileHelper::getModelFilePath($model, $filename);
+			$tmpPath = FileHelper::createPathForSave(FileHelper::getTemporaryFilePath($filename));
+			$map[$filename] = $tmpPath;
+			if ( is_file($filePath) )	// model has value but image may be removed from disk
+				rename($filePath, $tmpPath);
+			$file->delete();
+		}
+		// move files from tmp dir to model upload dir + save file relation
+		foreach($model->{$this->formAttribute} as $item) {
+			$value = $item['value'];
+			$tmpPath = isset($map[$value]) ? $map[$value] : FileHelper::getTemporaryFilePath($value);
+			$filePath = FileHelper::createPathForSave(FileHelper::getModelFilePath($model, $item['label']));
+			$filename = basename(($filePath));
+			if ( is_file($tmpPath) )
+				rename($tmpPath, $filePath);
+			// save relation
+			$fileModelClass = $model->getRelation($relation)->modelClass;
+			$file = new $fileModelClass([
+				$this->valueAttribute => $filename
+			]);
+			$model->link($relation, $file);
+		}
+	}
 }

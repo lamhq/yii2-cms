@@ -39,8 +39,8 @@ class FileHelper extends YiiFileHelper {
 
 	static public function getModelImageUrl($model, $filename, $width=null, $height=null, $options=[]) {
 		$srcPath = self::getModelFilePath($model, $filename);
-		if ( !$filename || (!$width && !$height) ) {
-			return is_file($srcPath) ? self::getModelFileUrl($model, $filename) : '';
+		if ( !is_file($srcPath) ) {
+			return self::getNoImageUrl($width, $height);
 		}
 
 		$parts = pathinfo($filename);
@@ -100,6 +100,17 @@ class FileHelper extends YiiFileHelper {
 
 	static protected function normalizeFileUrl($url) {
 		return dirname($url).'/'.rawurlencode(basename($url));
+	}
+
+	static protected function getNoImageUrl($width=null, $height=null) {
+		$src = self::getStoragePath('no-image.jpg');
+		if ( !is_file($src) ) return 'http://placehold.it/230x200?text='.urlencode(Yii::$app->name);
+
+		$filename = "no-image{$width}x{$height}.jpg";
+		$dst = self::getTemporaryFilePath($filename);
+		$url = self::getTemporaryFileUrl($filename);
+		ImageHelper::resize($src, $dst, ['width'=>$width, 'height'=>$height]);
+		return $url;
 	}
 
 }

@@ -69,8 +69,13 @@ class ImageHelper {
 		}
 		$oldWidth = imagesx($old);
 		$oldHeight = imagesy($old);
-		$newWidth = is_null($width) ? $oldWidth*$height/$oldHeight : $width;
-		$newHeight = is_null($height) ? $oldHeight*$width/$oldWidth : $height;
+		if (!$width && !$height) {
+			$newWidth = $oldWidth;
+			$newHeight = $oldHeight;
+		} else {
+			$newWidth = $width ? $oldWidth*$height/$oldHeight : $width;
+			$newHeight = $height ? $oldHeight*$width/$oldWidth : $height;
+		}
 
 		// resize image
 		$new = imagecreatetruecolor($newWidth, $newHeight);

@@ -1,6 +1,5 @@
 <?php
 /* @var $this yii\web\View */
-use app\components\helpers\HtmlHelper;
 $f = \Yii::$app->formatter;
 ?>
 <article class="post">
@@ -24,7 +23,7 @@ $f = \Yii::$app->formatter;
 	<div class="entry-summary">
 		<div class="row">
 			<div class="col-md-4">
-				<?= HtmlHelper::img($model->getFeaturedImageUrl(230, 200), 230, 200) ?>
+				<img src="<?= $model->getFeaturedImageUrl(230, 200) ?>" class="img-responsive" />
 			</div>
 			<div class="col-md-8">
 				<p>

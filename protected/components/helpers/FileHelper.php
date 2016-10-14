@@ -11,39 +11,62 @@ use yii\helpers\FileHelper as YiiFileHelper;
  */
 class FileHelper extends YiiFileHelper {
 
-	static protected function getModelUploadPath($model) {
-		if ($model instanceof \app\models\Post) {
-			return 'post';
-		}
-		return '';
+	static public function getStorageUrl($path='') {
+		$parts = [
+			Url::base(true),
+			Yii::$app->params['storagePath'],
+			$path
+		];
+		return self::normalizeFileUrl(implode('/', $parts));
 	}
 
-	/**
-	 * Returns url for storage item
-	 *
-	 * @param string $path if provided, append to the result
-	 * @return string the absolute path for storage directory in system
-	 */
-	static public function getModelFileUrl($model, $filename) {
-		if ($model->isNewRecord) return '';
+	static public function getStoragePath($path='') {
+		$parts = [
+			Yii::getAlias('@webroot'),
+			Yii::$app->params['storagePath'],
+			$path
+		];
+		return implode(DIRECTORY_SEPARATOR, $parts);
+	}
 
+	static public function getTemporaryFileUrl($path) {
+		return self::getStorageUrl('tmp/'.$path);
+	}
+
+	static public function getTemporaryFilePath($path) {
+		return self::getStoragePath('tmp'.DIRECTORY_SEPARATOR.$path);
+	}
+
+	static public function getModelImageUrl($model, $filename, $width=null, $height=null, $options=[]) {
+		$srcPath = self::getModelFilePath($model, $filename);
+		if ( !$filename || (!$width && !$height) ) {
+			return is_file($srcPath) ? self::getModelFileUrl($model, $filename) : '';
+		}
+
+		$parts = pathinfo($filename);
+		$p = sprintf('post/%s_%s_%sx%s.%s', 
+			$model->id, $parts['filename'], $width, $height, $parts['extension']);
+		$resizePath = self::getTemporaryFilePath($p);
+		$resizeUrl = self::getTemporaryFileUrl($p);
+
+		$options = array_merge(['width'=>$width, 'height'=>$height], $options);
+		ImageHelper::resize($srcPath, $resizePath, $options);
+		return is_file($resizePath) ? $resizeUrl : '';
+	}
+
+	static public function getModelFileUrl($model, $path) {
+		if ($model->isNewRecord) return '';
 		$parts = [
 			Url::base(true),
 			Yii::$app->params['storagePath'],
 			self::getModelUploadPath($model),
 			$model->id,
-			rawurlencode($filename)
+			$path
 		];
-		return implode('/', $parts);
+		return self::normalizeFileUrl(implode('/', $parts));
 	}
 
-	/**
-	 * Returns the absolute path for storage directory in system
-	 *
-	 * @param string $path if provided, append to the result
-	 * @return string the absolute path for storage directory in system
-	 */
-	static public function getModelFilePath($model, $filename) {
+	static public function getModelFilePath($model, $path) {
 		if ($model->isNewRecord) return '';
 		
 		$parts = [
@@ -51,35 +74,16 @@ class FileHelper extends YiiFileHelper {
 			Yii::$app->params['storagePath'],
 			self::getModelUploadPath($model),
 			$model->id,
-			$filename
+			$path
 		];
 		return implode(DIRECTORY_SEPARATOR, $parts);
 	}
 
-	/**
-	 * Returns the absolute path for temporary directory in system
-	 *
-	 * @param string $path filename, relative file path or directory path (e.g. "abc.jpg","a/b/c.jpg")
-	 * @return string the absolute path for an item in temporary directory
-	 */
-	static public function getTemporaryFilePath($filename) {
-		$parts = [
-			Yii::getAlias('@webroot'),
-			Yii::$app->params['storagePath'],
-			'tmp',
-			$filename
-		];
-		return implode(DIRECTORY_SEPARATOR, $parts);
-	}
-
-	static public function getTemporaryFileUrl($filename) {
-		$parts = [
-			Url::base(true),
-			Yii::$app->params['storagePath'],
-			'tmp',
-			rawurlencode($filename)
-		];
-		return implode('/', $parts);
+	static protected function getModelUploadPath($model) {
+		if ($model instanceof \app\models\Post) {
+			return 'post';
+		}
+		return '';
 	}
 
 	static public function createPathForSave($path) {
@@ -92,6 +96,10 @@ class FileHelper extends YiiFileHelper {
 		if ( !file_exists(dirname($path)) )
 			mkdir(dirname($path));
 		return $path;
+	}
+
+	static protected function normalizeFileUrl($url) {
+		return dirname($url).'/'.rawurlencode(basename($url));
 	}
 
 }

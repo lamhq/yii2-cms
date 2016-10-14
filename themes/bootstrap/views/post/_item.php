@@ -1,5 +1,6 @@
 <?php
 /* @var $this yii\web\View */
+use app\components\helpers\HtmlHelper;
 $f = \Yii::$app->formatter;
 ?>
 <article class="post">
@@ -20,12 +21,18 @@ $f = \Yii::$app->formatter;
 	<!-- .entry-meta -->
 	</header>
 	<!-- .entry-header -->
-
 	<div class="entry-summary">
-		<p>
-			<?= $f->asText($model->short_content) ?>
-			&hellip; <a class="read-more" href="<?= $model->url ?>">Read More</a>
-		</p>
+		<div class="row">
+			<div class="col-md-4">
+				<?= HtmlHelper::img($model->getFeaturedImageUrl(230, 200), 230, 200) ?>
+			</div>
+			<div class="col-md-8">
+				<p>
+					<?= $f->asText($model->short_content) ?>
+					&hellip; <a class="read-more" href="<?= $model->url ?>">Read More</a>
+				</p>
+			</div>
+		</div>
 		<hr>
 	</div>
 	<!-- .entry-summary -->

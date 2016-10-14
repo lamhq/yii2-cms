@@ -81,8 +81,11 @@ class UploadBehavior extends Behavior
 			$filename = '';
 		}
 		$model->$valueAttribute = $filename;
-		$model->db->createCommand()
-			->update($model->tableName(), [$valueAttribute => $filename])->execute();;
+		$model->db->createCommand()->update(
+			$model->tableName(), 
+			[$valueAttribute => $filename], 
+			"{$model->tableSchema->primaryKey[0]}={$model->id}"
+		)->execute();;
 	}
 
 	public function afterFindMultiple() {

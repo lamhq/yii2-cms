@@ -7,6 +7,7 @@ use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use app\models\Tag;
 use app\components\UploadBehavior;
+use app\components\helpers\DateHelper;
 
 /**
  * @inheritdoc
@@ -23,7 +24,7 @@ class Post extends \app\models\Post
 	{
 		return array_merge(parent::rules(), [
 			[['published_at'], 'filter', 'skipOnEmpty' => true, 'filter' => function ($value) {
-				return \app\components\helpers\DateHelper::toDbDatetime($value);
+				return DateHelper::toDbDatetime($value);
 			}],
 			[['tagNames', 'featuredImage'], 'safe']
 		]);

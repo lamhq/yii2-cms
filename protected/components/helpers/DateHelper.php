@@ -6,7 +6,7 @@ namespace app\components\helpers;
  */
 class DateHelper
 {
-	static public function getDatepicketDatetimeFormat() {
+	static public function getDatepickerDatetimeFormat() {
 		return 'DD/MM/YYYY HH:mm';
 	}
 

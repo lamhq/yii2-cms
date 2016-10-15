@@ -54,6 +54,10 @@ class SiteController extends Controller
 				'class' => 'app\components\UploadAction',
 				'disableCsrf'=>true
 			],
+			'redactor-upload' => [
+				'class' => 'app\components\RedactorUploadAction',
+				'disableCsrf'=>true
+			],
 		];
 	}
 

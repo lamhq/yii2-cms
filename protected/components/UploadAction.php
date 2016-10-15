@@ -3,21 +3,24 @@
 namespace app\components;
 
 use Yii;
-use yii\base\Action;
-use yii\web\Response;
-use yii\helpers\Url;
-use yii\base\ErrorException;
+use yii\web\BadRequestHttpException;
+use yii\web\ServerErrorHttpException;
 use app\components\helpers\FileHelper;
 
-class UploadAction extends Action {
+class UploadAction extends \yii\base\Action {
 
 	/**
 	 * @var bool
 	 */
 	public $disableCsrf = true;
 
+	/**
+	 * @var string
+	 */
+	public $fileIndex = 'ajax-file';
+
 	public function init() {
-		\Yii::$app->response->format = Response::FORMAT_JSON;
+		\Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
 		if ($this->disableCsrf) {
 			\Yii::$app->request->enableCsrfValidation = false;
@@ -27,31 +30,17 @@ class UploadAction extends Action {
 	public function run() {
 		$response = array();
 		try {
-			if ($_FILES['ajax-file']['error'] > 0) {
-				throw new ErrorException('An error ocurred when uploading.');
+			if ( !isset($_FILES[$this->fileIndex]) ) {
+				throw new BadRequestHttpException('Invalid request.');
 			}
 
-			$orgName = $_FILES['ajax-file']['name'];
-			$tmpPath = FileHelper::createPathForSave(
-				FileHelper::getTemporaryFilePath($orgName)
-			);
-			$value = basename($tmpPath);
-			$label = $orgName;
-			$url = FileHelper::getTemporaryFileUrl($value);
+			$file = $_FILES[$this->fileIndex];
+			if ($file['error'] > 0) {
+				throw new ServerErrorHttpException('An error ocurred when uploading.');
+			}
 
-			// move upload file to temporary directory
-			$dirPath = dirname($tmpPath);
-			if (!file_exists($dirPath))
-				mkdir($dirPath, 0777, true);
-			if ( !move_uploaded_file($_FILES['ajax-file']['tmp_name'], $tmpPath) )
-				throw new ErrorException('Error uploading file - check destination is writeable.');
-
-			$response = [
-				'value'=>$value,
-				'url'=>$url,
-				'label'=>$label,
-				'status'=>'success'
-			];
+			$this->validateFileUpload($file);
+			$response = $this->saveUploadFile($file);
 		} catch (\yii\base\ErrorException $ex) {
 			$response = [
 				'message'=>$ex->getMessage(),
@@ -59,6 +48,25 @@ class UploadAction extends Action {
 			];
 		}
 		return $response;
+	}
+
+	protected function saveUploadFile($file) {
+		$uploadName = $file['name'];
+		$filePath = FileHelper::createPathForSave(FileHelper::getTemporaryFilePath($uploadName));
+		$filename = basename($filePath);
+		$url = FileHelper::getTemporaryFileUrl($filename);
+		if ( !move_uploaded_file($file['tmp_name'], $filePath) )
+			throw new ServerErrorHttpException('Error saving file to server.');
+		return [
+			'value'=>$filename,
+			'url'=>$url,
+			'label'=>$uploadName,
+			'status'=>'success'
+		];
+	}
+
+	protected function validateFileUpload($file) {
+		// check allowed file types		
 	}
 
 }

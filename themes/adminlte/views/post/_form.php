@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
 use backend\models\Post;
 use backend\models\Category;
@@ -37,7 +38,7 @@ use kartik\select2\Select2;
 				'buttonSource' => true,
 				'convertDivs' => false,
 				'removeEmptyTags' => false,
-				'imageUpload' => Yii::$app->urlManager->createUrl(['/file-storage/upload-imperavi'])
+				'imageUpload' => Url::to(['/site/redactor-upload'])
 			]
 		]
 	) ?>

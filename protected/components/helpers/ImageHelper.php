@@ -36,15 +36,16 @@ class ImageHelper {
 		list($r, $g, $b) = self::hexToRGB($bgColor);
 
 		// load image from disk
-		$imageType = exif_imagetype($src);
+		$imageType = pathinfo($src, PATHINFO_EXTENSION);
 		switch ($imageType) {
-			case IMAGETYPE_GIF:
+			case 'gif':
 				$old = imagecreatefromgif($src);
 				break;
-			case IMAGETYPE_JPEG:
-				$old = self::loadJpeg($src);
+			case 'jpg':
+			case 'jpeg':
+				$old = imagecreatefromjpeg($src);
 				break;
-			case IMAGETYPE_PNG:
+			case 'png':
 				$old = imagecreatefrompng($src);
 				break;
 			default:
@@ -52,21 +53,25 @@ class ImageHelper {
 				break;
 		}
 		// auto rotate image
-		$exif = @exif_read_data($src);
-		$color = imagecolorallocate($old, $r, $g, $b);
-		if(!empty($exif['Orientation'])) {
-			switch($exif['Orientation']) {
-				case 8:
-					$old = imagerotate($old,90,$color);
-					break;
-				case 3:
-					$old = imagerotate($old,180,$color);
-					break;
-				case 6:
-					$old = imagerotate($old,-90,$color);
-					break;
+		if ( function_exists('exif_read_data') ) {
+			$exif = @exif_read_data($src);
+			$color = imagecolorallocate($old, $r, $g, $b);
+			if(!empty($exif['Orientation'])) {
+				switch($exif['Orientation']) {
+					case 3:
+						$old = imagerotate($old,180,$color);
+						break;
+					case 6:
+						$old = imagerotate($old,-90,$color);
+						break;
+					case 8:
+						$old = imagerotate($old,90,$color);
+						break;
+				}
 			}
 		}
+
+		// resize image
 		$oldWidth = imagesx($old);
 		$oldHeight = imagesy($old);
 		if (!$width && !$height) {
@@ -76,8 +81,6 @@ class ImageHelper {
 			$newWidth = $width ? $oldWidth*$height/$oldHeight : $width;
 			$newHeight = $height ? $oldHeight*$width/$oldWidth : $height;
 		}
-
-		// resize image
 		$new = imagecreatetruecolor($newWidth, $newHeight);
 		$color = imagecolorallocate($new, $r, $g, $b);
 		imagefill($new, 0, 0, $color);
@@ -122,33 +125,20 @@ class ImageHelper {
 
 		// save image to disk
 		switch ($imageType) {
-			case 1:
+			case 'gif':
 				$old = imagegif($new, $dst);
 				break;
-			case 2:
+			case 'jpg':
+			case 'jpeg':
 				$old = imagejpeg($new, $dst);
 				break;
-			case 3:
+			case 'png':
 				$old = imagepng($new, $dst);
 				break;
 			default:
 				break;
 		}
 		return true;
-	}
-
-	static protected function loadJpeg($imgname) {
-		$im = @imagecreatefromjpeg($imgname);
-		// create error image if loading fail
-		if (!$im) {
-			$im  = imagecreatetruecolor(150, 30);
-			$bgc = imagecolorallocate($im, 255, 255, 255);
-			$tc  = imagecolorallocate($im, 0, 0, 0);
-
-			imagefilledrectangle($im, 0, 0, 150, 30, $bgc);
-			imagestring($im, 1, 5, 5, 'Error loading ' . $imgname, $tc);
-		}
-		return $im;
 	}
 
 	/**
@@ -182,4 +172,5 @@ class ImageHelper {
 		list($r, $g, $b) = sscanf($hex, "#%02x%02x%02x");
 		return [$r, $g, $b];
 	}
+
 }

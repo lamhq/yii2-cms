@@ -11,7 +11,7 @@ class TreeCheckbox extends AssetBundle
 	];
 	
 	public $js = [
-		'tc.js',
+		'script.js',
 	];
 
 	public $depends = [

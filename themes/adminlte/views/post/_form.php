@@ -48,8 +48,7 @@ use kartik\select2\Select2;
 	<?= $form->field($model, 'published_at')->widget(
 		DateTimeWidget::className(),
 		[
-			'phpDatetimeFormat' => DateHelper::getAppDatetimeFormat(),
-			'momentDatetimeFormat' => DateHelper::getDatepicketDatetimeFormat(),
+			'momentDatetimeFormat' => DateHelper::getDatepickerDatetimeFormat(),
 		]
 	); ?>
 

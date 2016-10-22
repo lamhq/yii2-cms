@@ -89,7 +89,7 @@ class StorageHelper {
 
 	static protected function getNoImageUrl($width=null, $height=null) {
 		$src = self::getStoragePath('no-image.jpg');
-		if ( !is_file($src) ) return 'http://placehold.it/230x200?text='.urlencode(Yii::$app->name);
+		if ( !is_file($src) ) return 'http://placehold.it/230x200?text='.urlencode(Yii::$app->params['siteTitle']);
 
 		$filename = "no-image{$width}x{$height}.jpg";
 		$dst = self::getTemporaryFilePath($filename);

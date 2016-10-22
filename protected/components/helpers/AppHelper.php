@@ -22,7 +22,7 @@ class AppHelper
     }
 
     public static function getTitle() {
-        $t = array_filter([Yii::$app->view->title, Yii::$app->name]);
+        $t = array_filter([ Yii::$app->view->title, Yii::$app->params['siteTitle'] ]);
         return implode(' | ', $t);
     }
 }

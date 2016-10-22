@@ -5,7 +5,7 @@ namespace app\components;
 use Yii;
 use yii\web\BadRequestHttpException;
 use yii\web\ServerErrorHttpException;
-use app\components\helpers\FileHelper;
+use app\components\helpers\StorageHelper;
 
 class UploadAction extends \yii\base\Action {
 
@@ -52,9 +52,9 @@ class UploadAction extends \yii\base\Action {
 
 	protected function saveUploadFile($file) {
 		$uploadName = $file['name'];
-		$filePath = FileHelper::createPathForSave(FileHelper::getTemporaryFilePath($uploadName));
+		$filePath = StorageHelper::createPathForSave(StorageHelper::getTemporaryFilePath($uploadName));
 		$filename = basename($filePath);
-		$url = FileHelper::getTemporaryFileUrl($filename);
+		$url = StorageHelper::getTemporaryFileUrl($filename);
 		if ( !move_uploaded_file($file['tmp_name'], $filePath) )
 			throw new ServerErrorHttpException('Error saving file to server.');
 		return [

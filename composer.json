@@ -23,7 +23,8 @@
 		"trntv/yii2-datetime-widget": "^1.0",
 		"bower-asset/jstree": "^3.3",
 		"kartik-v/yii2-widget-select2": "^2.0",
-		"yiisoft/yii2-jui": "^2.0"
+		"yiisoft/yii2-jui": "^2.0",
+		"lamhq/php-helpers": "^0.0.2"
 	},
 	"require-dev": {
 		"yiisoft/yii2-codeception": "*",

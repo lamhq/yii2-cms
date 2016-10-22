@@ -6,7 +6,7 @@ use Yii;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
-use app\components\helpers\FileHelper;
+use app\components\helpers\StorageHelper;
 
 /**
  * This is the model class for table "{{%post}}".
@@ -166,7 +166,7 @@ class Post extends \yii\db\ActiveRecord
 	 * @return string
 	 */
 	public function getFeaturedImageUrl($width=null, $height=null) {
-		return FileHelper::getModelImageUrl($this, $this->featured_image, $width, $height);
+		return StorageHelper::getModelImageUrl($this, $this->featured_image, $width, $height);
 	}
 
 }

@@ -23,8 +23,8 @@ class Setting extends Component
 	 * @return
 	 */
 	public function init() {
-		$this->createTable();
 		$this->loadItems();
+		$this->applySetting();
 	}
 
 	/**
@@ -115,10 +115,15 @@ class Setting extends Component
 			$items=$cache->get($this->cacheId);
 
 		if(!$items) {
-			$rows = (new \yii\db\Query())
-				->select(['name', 'value'])
-				->from($this->tableName)
-				->all();
+			// use try catch in case running migration
+			try {
+				$rows = (new \yii\db\Query())
+					->select(['name', 'value'])
+					->from($this->tableName)
+					->all();
+			} catch (\yii\db\Exception $e) {
+				$rows = [];
+			}
 
 			if(empty($rows))
 				return false;
@@ -135,23 +140,9 @@ class Setting extends Component
 	}
 
 	/**
-	 * 
-	 * @return
-	 * 
-	 * If the database table doesn't exists, it will create it
+	 * merge database config to application params
 	 */
-	private function createTable()
-	{
-		$sql='CREATE TABLE IF NOT EXISTS '.$this->tableName.' (
-		  `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-		  `value` text COLLATE utf8_unicode_ci,
-		  PRIMARY KEY (`name`)
-		) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;';
-		Yii::$app->db->createCommand($sql)->execute();
-	}
-
 	public function applySetting() {
-		// merge database config to application params
 		$params = array_merge(Yii::$app->params, $this->getItems());
 		Yii::$app->params = $params;
 	}

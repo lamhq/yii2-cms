@@ -9,7 +9,7 @@ $config = [
 	'name' => 'Yii2 Core Project',
 	'vendorPath' => realpath(__DIR__ . '/../../vendor'),
 	'runtimePath' => realpath(__DIR__ . '/../../assets/runtime'),
-	'bootstrap' => ['setting'],
+	'bootstrap' => ['log', 'setting'],
 	'basePath' => dirname(__DIR__),
 	'timeZone' => 'Asia/Bangkok',
 	'language' => 'en-US',
@@ -54,16 +54,13 @@ $config = [
 		],
 		'setting'=>[
 			'class' => 'app\components\Setting',
-			'cacheId' => false,
+			'cacheId' => 'app-setting',
 		],
 	],
 	'modules' => [
 		'setup' => [ 'class' => 'setup\Module' ],
 		'backend' => [ 'class' => 'backend\Module' ],
 	],
-	'on beforeRequest' => function ($event) {
-		\Yii::$app->setting->applySetting();
-	},
 	'params' => [
 		'adminEmail' => 'admin@example.com',
 		'robotEmail' => 'noreply@m.mm',

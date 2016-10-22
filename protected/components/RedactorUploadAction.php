@@ -2,7 +2,7 @@
 
 namespace app\components;
 
-use app\components\helpers\FileHelper;
+use app\components\helpers\StorageHelper;
 
 class RedactorUploadAction extends UploadAction {
 
@@ -13,9 +13,9 @@ class RedactorUploadAction extends UploadAction {
 
 	protected function saveUploadFile($file) {
 		$uploadName = $file['name'];
-		$filePath = FileHelper::createPathForSave(FileHelper::getStoragePath('editor/'.$uploadName));
+		$filePath = StorageHelper::createPathForSave(StorageHelper::getStoragePath('editor/'.$uploadName));
 		$filename = basename($filePath);
-		$url = FileHelper::getStorageUrl('editor/'.$filename);
+		$url = StorageHelper::getStorageUrl('editor/'.$filename);
 		if ( !move_uploaded_file($file['tmp_name'], $filePath) )
 			throw new ServerErrorHttpException('Error saving file to server.');
 		return [

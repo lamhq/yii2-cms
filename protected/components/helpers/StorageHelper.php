@@ -2,14 +2,14 @@
 namespace app\components\helpers;
 use yii;
 use yii\helpers\Url;
-use yii\helpers\FileHelper as YiiFileHelper;
+use lamhq\php\helpers\ImageHelper;
 
 /**
  * Provide file helper method for application level
  * 
  * @author Lam Huynh <lamhq.com>
  */
-class FileHelper extends YiiFileHelper {
+class StorageHelper {
 
 	static public function getStorageUrl($path='') {
 		$parts = [
@@ -56,32 +56,17 @@ class FileHelper extends YiiFileHelper {
 
 	static public function getModelFileUrl($model, $path) {
 		if ($model->isNewRecord) return '';
-		$parts = [
-			Url::base(true),
-			Yii::$app->params['storagePath'],
-			self::getModelUploadPath($model),
-			$model->id,
-			$path
-		];
-		return self::normalizeFileUrl(implode('/', $parts));
+		return self::getStorageUrl( self::getModelUploadPath($model, $path) );
 	}
 
 	static public function getModelFilePath($model, $path) {
 		if ($model->isNewRecord) return '';
-		
-		$parts = [
-			Yii::getAlias('@webroot'),
-			Yii::$app->params['storagePath'],
-			self::getModelUploadPath($model),
-			$model->id,
-			$path
-		];
-		return implode(DIRECTORY_SEPARATOR, $parts);
+		return self::getStoragePath( self::getModelUploadPath($model, $path) );
 	}
 
-	static protected function getModelUploadPath($model) {
+	static protected function getModelUploadPath($model, $path) {
 		if ($model instanceof \app\models\Post) {
-			return 'post';
+			return 'post/'.$model->id.'/'.$path;
 		}
 		return '';
 	}

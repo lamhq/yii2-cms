@@ -3,7 +3,7 @@ namespace app\components;
 
 use yii\db\ActiveRecord;
 use yii\base\Behavior;
-use app\components\helpers\FileHelper;
+use app\components\helpers\StorageHelper;
 
 class UploadBehavior extends Behavior
 {
@@ -51,7 +51,7 @@ class UploadBehavior extends Behavior
 		$model->$formAttribute = $filename ? [
 			'value' => $filename,
 			'label' => $filename,
-			'url' => FileHelper::getModelFileUrl($model, $filename)
+			'url' => StorageHelper::getModelFileUrl($model, $filename)
 		] : null;
 	}
 
@@ -62,18 +62,19 @@ class UploadBehavior extends Behavior
 		// move existings file to tmp dir
 		$map = [];
 		$filename = $model->$valueAttribute;
-		$filePath = FileHelper::getModelFilePath($model, $filename);
-		$tmpPath = FileHelper::createPathForSave(FileHelper::getTemporaryFilePath($filename));
-		$map[$filename] = $tmpPath;
-		if ( is_file($filePath) )	// model has value but image may be removed from disk
+		$filePath = StorageHelper::getModelFilePath($model, $filename);
+		$tmpPath = StorageHelper::createPathForSave(StorageHelper::getTemporaryFilePath($filename));
+		if ( is_file($filePath) ) {
+			$map[$filename] = $tmpPath;
 			rename($filePath, $tmpPath);
+		}
 
 		// move files from tmp dir to model upload dir + update database
 		$fileUpload = $model->{$this->formAttribute};
 		if ($fileUpload) {
 			$value = $fileUpload['value'];
-			$tmpPath = isset($map[$value]) ? $map[$value] : FileHelper::getTemporaryFilePath($value);
-			$filePath = FileHelper::createPathForSave(FileHelper::getModelFilePath($model, $fileUpload['label']));
+			$tmpPath = isset($map[$value]) ? $map[$value] : StorageHelper::getTemporaryFilePath($value);
+			$filePath = StorageHelper::createPathForSave(StorageHelper::getModelFilePath($model, $fileUpload['label']));
 			$filename = basename(($filePath));
 			if ( is_file($tmpPath) )
 				rename($tmpPath, $filePath);
@@ -97,7 +98,7 @@ class UploadBehavior extends Behavior
 			$items[] = [
 				'value' => $file->$fileField,
 				'label' => $file->$fileField,
-				'url' => FileHelper::getModelFileUrl($model, $file->$fileField)
+				'url' => StorageHelper::getModelFileUrl($model, $file->$fileField)
 			];
 		}
 		$model->{$this->formAttribute} = $items;
@@ -111,8 +112,8 @@ class UploadBehavior extends Behavior
 		$map = [];
 		foreach($model->$relation as $file) {
 			$filename = $file->filename;
-			$filePath = FileHelper::getModelFilePath($model, $filename);
-			$tmpPath = FileHelper::createPathForSave(FileHelper::getTemporaryFilePath($filename));
+			$filePath = StorageHelper::getModelFilePath($model, $filename);
+			$tmpPath = StorageHelper::createPathForSave(StorageHelper::getTemporaryFilePath($filename));
 			$map[$filename] = $tmpPath;
 			if ( is_file($filePath) )	// model has value but image may be removed from disk
 				rename($filePath, $tmpPath);
@@ -121,8 +122,8 @@ class UploadBehavior extends Behavior
 		// move files from tmp dir to model upload dir + save file relation
 		foreach($model->{$this->formAttribute} as $item) {
 			$value = $item['value'];
-			$tmpPath = isset($map[$value]) ? $map[$value] : FileHelper::getTemporaryFilePath($value);
-			$filePath = FileHelper::createPathForSave(FileHelper::getModelFilePath($model, $item['label']));
+			$tmpPath = isset($map[$value]) ? $map[$value] : StorageHelper::getTemporaryFilePath($value);
+			$filePath = StorageHelper::createPathForSave(StorageHelper::getModelFilePath($model, $item['label']));
 			$filename = basename(($filePath));
 			if ( is_file($tmpPath) )
 				rename($tmpPath, $filePath);

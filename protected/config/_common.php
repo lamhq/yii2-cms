@@ -14,7 +14,8 @@ $config = [
 	'timeZone' => 'Asia/Bangkok',
 	'language' => 'en-US',
 	'sourceLanguage' => 'en-US',
-
+	// uncomment below line to put website offline
+	// 'catchAll' => [ 'site/offline' ],
 	'components' => [
 		'cache' => [
 			'class' => 'yii\caching\FileCache',
@@ -54,7 +55,6 @@ $config = [
 		],
 		'setting'=>[
 			'class' => 'app\components\Setting',
-			'cacheId' => 'app-setting',
 		],
 	],
 	'modules' => [
@@ -62,6 +62,9 @@ $config = [
 		'backend' => [ 'class' => 'backend\Module' ],
 	],
 	'params' => [
+		'siteTitle' => 'Yii2 Core',
+		'siteDescription' => 'A simple CMS website based on Yii2 by lamhq',
+		'tagLine' => 'Starter project for Yii2 application',
 		'adminEmail' => 'admin@example.com',
 		'robotEmail' => 'noreply@m.mm',
 		'storagePath'=>'media',	// relative storage path base on webroot

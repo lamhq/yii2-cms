@@ -7,22 +7,26 @@ use yii;
  */
 class AppHelper
 {
-    public static function setSuccess($message) {
+    static public function setSuccess($message) {
         Yii::$app->getSession()->setFlash('alert', [
             'body'=>$message,
             'options'=>['class'=>'alert-success']
         ]);
     }
 
-    public static function setError($message) {
+    static public function setError($message) {
         Yii::$app->getSession()->setFlash('alert', [
             'body'=>$message,
             'options'=>['class'=>'alert-error']
         ]);
     }
 
-    public static function getTitle() {
+    static public function getPageTitle() {
         $t = array_filter([ Yii::$app->view->title, Yii::$app->params['siteTitle'] ]);
         return implode(' | ', $t);
+    }
+
+    static public function params($name) {
+        return Yii::$app->params[$name];
     }
 }

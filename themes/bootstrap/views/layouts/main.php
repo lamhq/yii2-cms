@@ -11,6 +11,10 @@ use yii\helpers\Url;
 use app\components\helpers\AppHelper;
 
 app\assets\BootstrapThemeAsset::register($this);
+$this->registerMetaTag([
+    'name' => 'description',
+    'content' => AppHelper::params('siteDescription')
+]);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -19,7 +23,7 @@ app\assets\BootstrapThemeAsset::register($this);
 	<meta charset="<?= Yii::$app->charset ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<?= Html::csrfMetaTags() ?>
-	<title><?= Html::encode(AppHelper::getTitle()) ?></title>
+	<title><?= Html::encode(AppHelper::getPageTitle()) ?></title>
 	<?php $this->head() ?>
 
 	<link rel="icon" href="<?= Url::to('@web/themes/bootstrap/images/icon.png'); ?>" sizes="32x32" />
@@ -46,8 +50,9 @@ app\assets\BootstrapThemeAsset::register($this);
 			<div class="custom-header-image" style="">
 				<div class="container">
 					<div class="site-branding-text">
-						<h1 class="site-title"><a href="<?= Yii::$app->homeUrl ?>" rel="home"><?= Yii::$app->name ?></a></h1>
-						<h2 class="site-description">A simple CMS site</h2>
+						<h1 class="site-title"><a href="<?= Yii::$app->homeUrl ?>" rel="home">
+							<?= Html::encode(AppHelper::params('siteTitle')) ?></a></h1>
+						<h2 class="site-description"><?= Html::encode(AppHelper::params('tagLine')) ?></h2>
 					</div>
 				</div>
 			</div>

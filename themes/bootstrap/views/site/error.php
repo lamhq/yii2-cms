@@ -6,7 +6,7 @@
 /* @var $exception Exception */
 
 use yii\helpers\Html;
-
+use app\components\helpers\AppHelper;
 $this->title = $name;
 ?>
 <div class="site-error">
@@ -21,7 +21,7 @@ $this->title = $name;
         The above error occurred while the Web server was processing your request.
     </p>
     <p>
-        Please contact us if you think this is a server error. Thank you.
+        Please <a href="mailto:<?= urlencode(AppHelper::params('adminEmail')) ?>">contact</a> us if you think this is a server error. Thank you.
     </p>
 
 </div>

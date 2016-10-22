@@ -96,6 +96,7 @@ class Setting extends Component
 				return [$key, serialize($value)];
 			}, array_keys($this->_items), array_values($this->_items) )
 		)->execute();
+		Yii::$app->cache->delete($this->cacheId); 
 		return true;
 	}
 

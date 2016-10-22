@@ -20,7 +20,7 @@ class SettingForm extends Model
 		return [
 			['adminEmail', 'required'],
 			['adminEmail', 'email'],
-			[['tagLine','siteTitle', 'adminEmail'], 'safe']
+			[['tagLine','siteTitle', 'siteDescription', 'adminEmail'], 'safe']
 		];
 	}
 

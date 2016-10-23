@@ -48,9 +48,9 @@ class Post extends \app\models\Post
 		return array_merge(parent::behaviors(), [
 			[
 				'class' => UploadBehavior::className(),
-				'multiple' => false,
 				'valueAttribute'=>'featured_image',
 				'formAttribute'=>'featuredImage',
+				'multiple' => false,
 			],
 		]);
 	}

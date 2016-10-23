@@ -76,7 +76,7 @@ $.fn.ajaxUpload = function($options) {
 					setTimeout(function () {
 						item.find('.progress').addClass('hide');
 						updateItem(item, response);
-					}, 1000);
+					}, 500);
 					widget.find('.holder').remove();
 				} else {
 					removeItem(widget, item);

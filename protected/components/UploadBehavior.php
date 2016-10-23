@@ -120,7 +120,9 @@ class UploadBehavior extends Behavior
 			$file->delete();
 		}
 		// move files from tmp dir to model upload dir + save file relation
-		foreach($model->{$this->formAttribute} as $item) {
+		$filesUpload = $model->{$this->formAttribute};
+		if ( !is_array($filesUpload) ) $filesUpload = [];
+		foreach($filesUpload as $item) {
 			$value = $item['value'];
 			$tmpPath = isset($map[$value]) ? $map[$value] : StorageHelper::getTemporaryFilePath($value);
 			$filePath = StorageHelper::createPathForSave(StorageHelper::getModelFilePath($model, $item['label']));

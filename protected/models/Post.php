@@ -7,6 +7,7 @@ use yii\behaviors\BlameableBehavior;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
 use app\components\helpers\StorageHelper;
+use app\components\CleanupBehavior;
 
 /**
  * This is the model class for table "{{%post}}".
@@ -144,6 +145,11 @@ class Post extends \yii\db\ActiveRecord
 				'class' => SluggableBehavior::className(),
 				'attribute' => 'title',
 				'immutable' => true
+			],
+			[
+				'class' => CleanupBehavior::className(),
+				'attribute'=>'featured_image',
+				'multiple' => false,
 			],
 		];
 	}

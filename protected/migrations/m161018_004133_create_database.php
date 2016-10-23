@@ -127,6 +127,19 @@ class m161018_004133_create_database extends Migration
 			'created_at' => $this->datetime(),
 			'updated_at' => $this->datetime(),
 		], $tableOptions);
+
+		// slideshow
+		$this->createTable('{{%slideshow}}', [
+			'id' => $this->primaryKey(),
+			'name' => $this->string(30)->notNull(),
+		], $tableOptions);
+
+		// slideshow
+		$this->createTable('{{%slideshow_image}}', [
+			'id' => $this->primaryKey(),
+			'filename' => $this->string(255)->notNull(),
+			'slideshow_id' => $this->integer()->notNull(),
+		], $tableOptions);
 	}
 
 	public function addForeignKeys() {
@@ -241,6 +254,22 @@ class m161018_004133_create_database extends Migration
 			'CASCADE',
 			'CASCADE'
 		);
+
+		// slideshow_image
+		$this->createIndex(
+			'idx-slideshow_image-slideshow_id',
+			'{{%slideshow_image}}',
+			'slideshow_id'
+		);
+		$this->addForeignKey(
+			'fk-user_token-slideshow_id',
+			'{{%slideshow_image}}',
+			'slideshow_id',
+			'{{%slideshow}}',
+			'id',
+			'CASCADE',
+			'CASCADE'
+		);
 	}
 
 	public function initRbac() {
@@ -262,6 +291,8 @@ class m161018_004133_create_database extends Migration
 		$this->dropTable('{{%master_role}}');
 		$this->dropTable('{{%lookup}}');
 		$this->dropTable('{{%email_template}}');
+		$this->dropTable('{{%slideshow_image}}');
+		$this->dropTable('{{%slideshow}}');
 		$authManager = Yii::$app->getAuthManager();
 		$this->dropTable($authManager->assignmentTable);
 		$this->dropTable($authManager->itemChildTable);

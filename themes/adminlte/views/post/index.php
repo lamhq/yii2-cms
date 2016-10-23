@@ -26,11 +26,13 @@ $this->params['breadcrumbs'][] = $this->title;
 				['class' => 'yii\grid\SerialColumn'],
 
 				'title',
-				// 'featured_image',
 				[
 					'class' => EnumColumn::className(),
-					'attribute' => 'status',
-					'enum' => Post::getStatuses()
+					'attribute' => 'featured_image',
+					'format' => 'html',
+					'value'=>function ($model, $key, $index, $column) {
+						return Html::img($model->getFeaturedImageUrl(230, 200));
+					}
 				],
 				[
 					'class' => EnumColumn::className(),

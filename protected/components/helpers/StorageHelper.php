@@ -67,6 +67,8 @@ class StorageHelper {
 	static protected function getModelUploadPath($model, $path) {
 		if ($model instanceof \app\models\Post) {
 			return 'post/'.$model->id.'/'.$path;
+		} elseif ($model instanceof \app\models\Slideshow) {
+			return 'slideshow/'.$model->id.'/'.$path;
 		}
 		return '';
 	}
@@ -79,7 +81,7 @@ class StorageHelper {
 			$i++;
 		}
 		if ( !file_exists(dirname($path)) )
-			mkdir(dirname($path));
+			mkdir(dirname($path), 0777, true);
 		return $path;
 	}
 

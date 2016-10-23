@@ -18,6 +18,7 @@ use backend\widgets\AuthBlock;
 					['label'=>Yii::t('app', 'Banner'), 'url'=>['/backend/banner/index'] ],
 					['label'=>Yii::t('app', 'Post'), 'url'=>['/backend/post/index'], 'permission'=>'viewPost' ],
 					['label'=>Yii::t('app', 'Category'), 'url'=>['/backend/category/index'] ],
+					['label'=>Yii::t('app', 'Slideshow'), 'url'=>['/backend/slideshow/index'] ],
 				]],
 				['label'=>Yii::t('app', 'System'), 'icon'=>'fa fa-cogs', 'items'=>[
 					['label'=>Yii::t('app', 'Configuration'), 'url'=>['/backend/setting/index'], 'icon'=>'fa fa-wrench' ],

@@ -63,10 +63,20 @@ class Role extends Model
 		return ArrayHelper::map(self::getRoles(), 'name', 'name');
 	}
 
+	/**
+	 * Returns all roles in the system.
+	 * @return yii\rbac\Role[] all roles in the system. The array is indexed by the role names.
+	 */
 	static public function getRoles () {
 		return Yii::$app->authManager->getRoles();
 	}
 
+	/**
+	 * Returns all master roles in the system.
+	 * Roles in master role table have access to all permissions without manually assign
+	 * 
+	 * @return yii\rbac\Role[] all roles in the system. The array is indexed by the role names.
+	 */
 	static public function getMasterRoles() {
 		$list = self::getMasterRoleNames();
 		return array_filter(self::getRoles(), function ($role) use ($list) {
@@ -74,22 +84,37 @@ class Role extends Model
 		});
 	}
 
+	/**
+	 * Returns the names of role in master role table
+	 * Roles in master role table have access to all permissions without manually assign
+	 * 
+	 * @return string the child permissions
+	 */
 	static protected function getMasterRoleNames() {
 		return (new Query)
 			->from('{{%master_role}}')
 			->column(Yii::$app->authManager->db);
 	}
 
-	// get directly assigned permissions of a role
-	static public function getAssignedPermissions($role) {
-		return array_filter(Yii::$app->authManager->getChildren($role), function ($item) {
+	/**
+	 * Returns the child permissions of an auth item.
+	 * @param string $name the parent name
+	 * @return yii\rbac\Item[] the child permissions
+	 */
+	static public function getChildPermissions($name) {
+		return array_filter(Yii::$app->authManager->getChildren($name), function ($item) {
 			return $item->type==Item::TYPE_PERMISSION;
 		});
 	}
 
-	static public function find($id) {
+	/**
+	 * Returns the role model base on the name
+	 * @param string $name the role name
+	 * @return backend\model\Role the role model
+	 */
+	static public function find($name) {
 		$auth = Yii::$app->authManager;
-		$role = $auth->getRole($id);
+		$role = $auth->getRole($name);
 		if (!$role) return false;
 
 		$model = new Role([
@@ -100,7 +125,7 @@ class Role extends Model
 		]);
 
 		$assigneds = ArrayHelper::getColumn(
-			self::getAssignedPermissions($role->name)
+			self::getChildPermissions($role->name)
 			, 'name', false);
 		$model->permissions = json_encode($assigneds);
 
@@ -114,6 +139,9 @@ class Role extends Model
 		return $model;
 	}
 
+	/**
+	 * Validate and save role to database with selected permissions
+	 */
 	public function save() {
 		if (!$this->validate()) return;
 
@@ -132,7 +160,7 @@ class Role extends Model
 			$auth->update($this->name, $role);
 
 			// remove old assigned permissions
-			foreach(self::getAssignedPermissions($role->name) as $permission) {
+			foreach(self::getChildPermissions($role->name) as $permission) {
 				$auth->removeChild($role, $permission);
 			}
 
@@ -145,7 +173,7 @@ class Role extends Model
 					$auth->db->createCommand()
 						->insert('{{%master_role}}', ['name'=>$this->name])
 						->execute();				
-					$newPermissions = array_column(Permission::getChildPermissions(null), 'name');
+					$newPermissions = ArrayHelper::getColumn(Permission::getChildPermissions(), 'name');
 					break;
 				case 'custom':
 					$newPermissions = json_decode($this->permissions, true);

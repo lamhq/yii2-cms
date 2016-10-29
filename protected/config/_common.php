@@ -69,22 +69,6 @@ $config = [
 		'robotEmail' => 'noreply@m.mm',
 		'storagePath'=>'media',	// relative storage path base on webroot
 		'defaultPageSize' => 10,
-		'accessRules'=>[
-			[
-				'allow' => true,
-				'controllers' => ['backend/site'],
-				'actions' => ['login', 'error', 'forgot-password', 'reset-password'],
-				'roles' => ['?'],
-			],
-			[
-				'allow' => true,
-				'roles' => ['@'],
-			],
-			[
-				'allow' => false,
-				'roles' => ['?'],
-			],
-		]
 	],
 ];
 

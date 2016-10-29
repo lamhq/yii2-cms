@@ -35,7 +35,7 @@ use kartik\select2\Select2;
 
 		<?= $form->field($model, 'childs')->widget(
 			Select2::className(), [
-			'data' => ArrayHelper::map(Permission::getPermissions(), 'name', 'description'),
+			'data' => $model->getChildsListData(),
 			'pluginOptions' => [
 				'multiple' => true,
 				'tags' => true,
@@ -45,7 +45,7 @@ use kartik\select2\Select2;
 
 		<?= $form->field($model, 'parents')->widget(
 			Select2::className(), [
-			'data' => ArrayHelper::map(Permission::getPermissions(), 'name', 'description'),
+			'data' => $model->getParentsListData(),
 			'pluginOptions' => [
 				'multiple' => true,
 				'tags' => true,

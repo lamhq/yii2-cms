@@ -9,6 +9,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\db\Query;
 use yii\rbac\Item;
+use app\components\helpers\AppHelper;
 
 /**
  * Account form
@@ -44,29 +45,37 @@ class Permission extends Model
 		];
 	}
 
+	/**
+	 * Returns all permissions in the system.
+	 * @return yii\rbac\Permission[] all permissions in the system. The array is indexed by the permission names.
+	 */
 	static public function getPermissions() {
-		$key = 'tmp-pers';
-		if (!isset(Yii::$app->params[$key])) {
-			Yii::$app->params[$key] = Yii::$app->authManager->getPermissions();
-		}
-		return Yii::$app->params[$key];
+		return AppHelper::singleton('permissions', function () {
+			return Yii::$app->authManager->getPermissions();
+		});
 	}
 
+	/**
+	 * Returns an array of permission relation [ ['parent', 'child'],.. ]
+	 * @return array
+	 */
 	static protected function getPermissionRelation() {
-		$key = 'tmp-per-relation';
-		if (!isset(Yii::$app->params[$key])) {
+		return AppHelper::singleton('permissionRelation', function () {
 			$auth = Yii::$app->authManager;
-			Yii::$app->params[$key] = (new Query)
+			return (new Query)
 				->select('itemChild.*')
 				->from($auth->itemChildTable.' AS itemChild')
 				->join('INNER JOIN', $auth->itemTable.' AS item', 'itemChild.parent=item.name')
 				->where(['item.type'=> Item::TYPE_PERMISSION])
 				->all($auth->db);
-		}
-		return Yii::$app->params[$key];
+		});
 	}
 
-	// get child permissions. if parent is null, return top permissions
+	/**
+	 * Get child permissions of a parent permission. if parent is null, return top permissions
+	 * @param string $name the parent name
+	 * @return yii\rbac\Permission[]
+	 */
 	static public function getChildPermissions($parent=null) {
 		// find top permissions
 		if (!$parent) {
@@ -87,7 +96,37 @@ class Permission extends Model
 		});
 	}
 
-	// get parent permissions.
+	/**
+	 * Get all descendant permissions of a permission
+	 * @param string $name the parent name
+	 * @return yii\rbac\Permission[]
+	 */
+	static public function getDescendantPermissions($parent) {
+		$result = $descendants = self::getChildPermissions($parent);
+		foreach ($descendants as $item) {
+			$result = array_merge($result, self::getDescendantPermissions($item->name));
+		}
+		return $result;
+	}
+
+	/**
+	 * Get all ancestor permissions of a permission
+	 * @param string $child the children name
+	 * @return yii\rbac\Permission[]
+	 */
+	static public function getAncestorPermissions($child) {
+		$result = $ancestors = self::getParentPermissions($child);
+		foreach ($ancestors as $item) {
+			$result = array_merge(self::getAncestorPermissions($item->name), $result);
+		}
+		return $result;
+	}
+
+	/**
+	 * Get all parent permissions of a permission (a permission may has more than one parent)
+	 * @param string $child the children name
+	 * @return yii\rbac\Permission[]
+	 */
 	static public function getParentPermissions($child) {
 		$parents = array_column(
 			array_filter(self::getPermissionRelation(), function($item) use ($child) {
@@ -99,7 +138,10 @@ class Permission extends Model
 		});
 	}
 
-	// get all permissions in hierarchy
+	/**
+	 * Returns an array of permission data [ ['name', 'description', 'childs'],.. ]
+	 * @return array
+	 */
 	static public function getPermissionTree() {
 		$buildTree = function ($parent=null) use (&$buildTree) {
 			return array_map(function ($item) use ($buildTree) {
@@ -115,6 +157,10 @@ class Permission extends Model
 		return $buildTree();
 	}
 
+	/**
+	 * Returns an array of permission data for display in menu widget [ ['label', 'url', 'items'],.. ]
+	 * @return array
+	 */
 	static public function getPermissionMenuItems() {
 		$buildTree = function ($parent=null) use (&$buildTree) {
 			return array_map(function ($item) use ($buildTree) {
@@ -130,11 +176,14 @@ class Permission extends Model
 		return $buildTree();
 	}
 
+	/**
+	 * called when delete/update a permission
+	 */
 	static protected function onPermissionChange() {
-		// re-assign top permissions to master roles
+		// auto assign top level permissions to master roles
 		$auth = Yii::$app->authManager;
 		foreach (Role::getMasterRoles() as $role) {
-			foreach(Role::getAssignedPermissions($role->name) as $permission) {
+			foreach(Role::getChildPermissions($role->name) as $permission) {
 				$auth->removeChild($role, $permission);
 			}
 
@@ -144,6 +193,11 @@ class Permission extends Model
 		}
 	}
 
+	/**
+	 * Returns the permission model base on the name
+	 * @param string $name the permission name
+	 * @return backend\model\Permisson the model
+	 */
 	static public function find($name) {
 		$auth = Yii::$app->authManager;
 		$permission = $auth->getPermission($name);
@@ -229,4 +283,27 @@ class Permission extends Model
 		return true;
 	}
 
+	public function getChildsListData() {
+		if ($this->isNewRecord) {
+			$permissions = self::getPermissions();
+		} else {
+			$ancestors = ArrayHelper::getColumn(self::getAncestorPermissions($this->name), 'name');
+			$permissions = array_filter(self::getPermissions(), function($item) use ($ancestors) {
+				return !in_array($item->name, $ancestors);
+			});
+		}
+		return ArrayHelper::map($permissions, 'name', 'description');
+	}
+
+	public function getParentsListData() {
+		if ($this->isNewRecord) {
+			$permissions = self::getPermissions();
+		} else {
+			$descendants = ArrayHelper::getColumn(self::getDescendantPermissions($this->name), 'name');
+			$permissions = array_filter(self::getPermissions(), function($item) use ($descendants) {
+				return !in_array($item->name, $descendants);
+			});
+		}
+		return ArrayHelper::map($permissions, 'name', 'description');
+	}
 }
